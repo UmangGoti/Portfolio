@@ -6,7 +6,7 @@ import { getLocales } from "expo-localization";
 import en from "./locales/en.json";
 import hi from "./locales/hi.json";
 import gu from "./locales/gu.json";
-import { STORAGE } from "./src/storage";
+import { STORAGE } from "./src/constants/storage";
 
 const i18n = new I18n({
   en,
