@@ -1,5 +1,8 @@
 {
-  "MyProfile": {
+  "Profile": {
     "name": "Umang Goti"
-  }
+  },
+  "MyProfile": "MyProfile",
+  "Explore": "Explore",
+  "Settings": "Settings"
 }

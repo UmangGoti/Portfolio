@@ -1,11 +1,10 @@
-import ReactNative from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { I18n } from "i18n-js";
 import { getLocales } from "expo-localization";
-
+import { I18n } from "i18n-js";
+import ReactNative from "react-native";
 import en from "./locales/en.json";
-import hi from "./locales/hi.json";
 import gu from "./locales/gu.json";
+import hi from "./locales/hi.json";
 import { STORAGE } from "./src/constants/storage";
 
 const i18n = new I18n({
@@ -16,7 +15,8 @@ const i18n = new I18n({
 
 // Set the locale once at the beginning of your app.
 i18n.locale = getLocales()[0].languageCode ?? "en";
-// Should the app fallback to English if user locale doesn't exists
+
+// Should the app fallback to English if user locale doesn't exists.
 i18n.enableFallback = true;
 
 // Default Languages for support.
@@ -38,12 +38,12 @@ export const isRTL = false;
 
 ReactNative.I18nManager.allowRTL(isRTL);
 
-// The method we'll use instead of a regular string
+// The method we'll use instead of a regular string.
 export const strings = (name, params = {}) => {
   return i18n.t(name, params);
 };
 
-// Allow persist locale after app closed
+// Allow persist locale after app closed.
 export const getUserPreferableLocale = async () => {
   const locale = await AsyncStorage.getItem(STORAGE.LANGUAGE);
   if (locale) {
@@ -51,5 +51,5 @@ export const getUserPreferableLocale = async () => {
   }
 };
 
-// If language selected get locale
+// If language selected, get locale.
 getUserPreferableLocale();

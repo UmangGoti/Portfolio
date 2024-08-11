@@ -1,12 +1,16 @@
+import FontAwesome from "@expo/vector-icons/FontAwesome";
+import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import { NavigationContainer } from "@react-navigation/native";
+import { NavigationContainer, useTheme } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
-import { StyleSheet, View } from "react-native";
+import { BlurView } from "expo-blur";
+import React from "react";
+import { Platform, StyleSheet, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { navigationRef } from "./NavigationUtils";
 import { ROUTES } from "../constants";
 import { Explore, MyProfile, Settings } from "../screens";
-import React from "react";
+import { colors } from "../theme";
+import { navigationRef } from "./NavigationUtils";
 
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -21,6 +25,7 @@ const RootNavigator = () => {
         <NavigationContainer
           key={"NavigationContainer"}
           ref={navigationRef}
+          theme={true ? colors?.dark : colors?.light}
           onReady={() => {
             routeNameRef.current =
               navigationRef.current.getCurrentRoute()?.name;
@@ -47,14 +52,52 @@ const RootNavigator = () => {
 };
 
 const Tabs = () => {
+  const { colors } = useTheme();
+  console.log(colors);
   return (
-    <Tab.Navigator key={'Tab.Navigator'} initialRouteName={ROUTES.TABS.MY_PROFILE}>
+    <Tab.Navigator
+      key={"Tab.Navigator"}
+      initialRouteName={ROUTES.TABS.MY_PROFILE}
+      screenOptions={{
+        tabBarStyle: Platform.select({
+          ios: {
+            backgroundColor: "transparent",
+          },
+          android: {
+            backgroundColor: "transparent",
+          },
+        }),
+        tabBarBackground: () => {
+          return (
+            <BlurView
+              blurType={true ? "dark" : "light"}
+              blurAmount={8}
+              style={StyleSheet.absoluteFill}
+            />
+          );
+        },
+      }}
+    >
       <Tab.Screen
         key={ROUTES.TABS.MY_PROFILE}
         name={ROUTES.TABS.MY_PROFILE}
         component={MyProfile}
         options={{
-          headerShown:false
+          headerShown: false,
+          tabBarIcon: ({ focused }) => {
+            return (
+              <FontAwesome
+                name="user"
+                size={24}
+                color={
+                  focused ? colors?.tabIconColorFocused : colors?.tabIconColor
+                }
+              />
+            );
+          },
+          tabBarLabel: () => {
+            return <></>;
+          },
         }}
       />
       <Tab.Screen
@@ -62,7 +105,21 @@ const Tabs = () => {
         name={ROUTES.TABS.EXPLORE}
         component={Explore}
         options={{
-          headerShown:false
+          headerShown: false,
+          tabBarIcon: ({ focused }) => {
+            return (
+              <MaterialIcons
+                name="explore"
+                size={24}
+                color={
+                  focused ? colors?.tabIconColorFocused : colors?.tabIconColor
+                }
+              />
+            );
+          },
+          tabBarLabel: () => {
+            return <></>;
+          },
         }}
       />
       <Tab.Screen
@@ -70,7 +127,21 @@ const Tabs = () => {
         name={ROUTES.TABS.SETTINGS}
         component={Settings}
         options={{
-          headerShown:false
+          headerShown: false,
+          tabBarIcon: ({ focused }) => {
+            return (
+              <MaterialIcons
+                name="settings"
+                size={24}
+                color={
+                  focused ? colors?.tabIconColorFocused : colors?.tabIconColor
+                }
+              />
+            );
+          },
+          tabBarLabel: ({ focused }) => {
+            return <></>;
+          },
         }}
       />
     </Tab.Navigator>
