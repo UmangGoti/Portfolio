@@ -134,4 +134,9 @@ const data = [
     discretion: "",
     route: ROUTES.SCREENS.TAP_TO_POP_COUNTER_SCREEN
   },
+  {
+    title: "Ripple Button",
+    discretion: "",
+    route: ROUTES.SCREENS.RIPPLE_BUTTON_SCREEN
+  },
 ];

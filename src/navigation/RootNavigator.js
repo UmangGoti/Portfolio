@@ -8,7 +8,7 @@ import React, { useEffect } from "react";
 import { Platform, StyleSheet, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { ROUTES } from "../constants";
-import { DashboardAnimationScreen, DiscordReactionButtonScreen, Explore, MyProfile, Settings, TapToPopCounterScreen } from "../screens";
+import { DashboardAnimationScreen, DiscordReactionButtonScreen, Explore, MyProfile, RippleButtonScreen, Settings, TapToPopCounterScreen } from "../screens";
 import { colors } from "../theme";
 import { navigationRef } from "./NavigationUtils";
 import { useDispatch, useSelector } from "react-redux";
@@ -70,6 +70,12 @@ const RootNavigator = () => {
               key={ROUTES.SCREENS.TAP_TO_POP_COUNTER_SCREEN}
               name={ROUTES.SCREENS.TAP_TO_POP_COUNTER_SCREEN}
               component={TapToPopCounterScreen}
+              options={{ headerShown: false }}
+            />
+            <Stack.Screen
+              key={ROUTES.SCREENS.RIPPLE_BUTTON_SCREEN}
+              name={ROUTES.SCREENS.RIPPLE_BUTTON_SCREEN}
+              component={RippleButtonScreen}
               options={{ headerShown: false }}
             />
           </Stack.Navigator>
