@@ -12,7 +12,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { ROUTES } from "../constants";
 import { STORAGE } from "../constants/storage";
 import { setMode } from "../redux/slice/globalSlice";
-import { DashboardAnimationScreen, DiscordReactionButtonScreen, Explore, MyProfile, RandomCircularProgressBarScreen, RippleButtonScreen, RotatingScalingBoxScreen, Settings, SoundWaveScreen, TapToPopCounterScreen } from "../screens";
+import { ColorChangingBoxAnimationScreen, DashboardAnimationScreen, DiscordReactionButtonScreen, Explore, MyProfile, RandomCircularProgressBarScreen, RippleButtonScreen, RotatingScalingBoxScreen, Settings, SoundWaveScreen, TapToPopCounterScreen } from "../screens";
 import { colors } from "../theme";
 import { navigationRef } from "./NavigationUtils";
 
@@ -99,6 +99,12 @@ const RootNavigator = () => {
               key={ROUTES.SCREENS.SOUND_WAVE_SCREEN}
               name={ROUTES.SCREENS.SOUND_WAVE_SCREEN}
               component={SoundWaveScreen}
+              options={{ headerShown: false }}
+            />
+            <Stack.Screen
+              key={ROUTES.SCREENS.COLOR_CHANGING_BOX_ANIMATION_SCREEN}
+              name={ROUTES.SCREENS.COLOR_CHANGING_BOX_ANIMATION_SCREEN}
+              component={ColorChangingBoxAnimationScreen}
               options={{ headerShown: false }}
             />
           </Stack.Navigator>

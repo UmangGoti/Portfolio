@@ -155,4 +155,9 @@ const data = [
     discretion: "",
     route: ROUTES.SCREENS.ROTATING_SCALING_BOX_SCREEN
   },
+  {
+    title: "Changing Color Box",
+    discretion: "",
+    route: ROUTES.SCREENS.COLOR_CHANGING_BOX_ANIMATION_SCREEN
+  },
 ];

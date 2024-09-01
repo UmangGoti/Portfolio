@@ -13,5 +13,6 @@ export const ROUTES = {
     ROTATING_SCALING_BOX_SCREEN: 'RotatingScalingBoxScreen',
     RANDOM_CIRCULAR_PROGRESS_BAR_SCREEN: 'RandomCircularProgressBarScreen',
     SOUND_WAVE_SCREEN: 'SoundWaveScreen',
+    COLOR_CHANGING_BOX_ANIMATION_SCREEN: 'ColorChangingBoxAnimationScreen',
   }
 };

@@ -1,3 +1,4 @@
+export { default as ColorChangingBoxAnimationScreen } from './ColorChangingBoxAnimationScreen'
 export { default as DashboardAnimationScreen } from './DashboardAnimationScreen'
 export { default as DiscordReactionButtonScreen } from './DiscordReactionButtonScreen'
 export { default as Explore } from './Explore'
