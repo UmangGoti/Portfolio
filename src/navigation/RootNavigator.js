@@ -4,20 +4,30 @@ import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { NavigationContainer, useTheme } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
 import { BlurView } from "expo-blur";
-import React from "react";
+import React, { useEffect } from "react";
 import { Platform, StyleSheet, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { ROUTES } from "../constants";
-import { Explore, MyProfile, Settings } from "../screens";
+import { DashboardAnimationScreen, DiscordReactionButtonScreen, Explore, MyProfile, Settings, TapToPopCounterScreen } from "../screens";
 import { colors } from "../theme";
 import { navigationRef } from "./NavigationUtils";
+import { useDispatch, useSelector } from "react-redux";
+import { useColorScheme } from 'react-native';
+import { setMode } from "../redux/slice/globalSlice";
 
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
 
 const RootNavigator = () => {
+  const global = useSelector(state => state?.global)
+  const dispatch = useDispatch()
   const routeNameRef = React.createRef();
   const styles = createStyle();
+  const colorScheme = useColorScheme();
+
+  useEffect(() => {
+    dispatch(setMode(colorScheme === 'dark' ? true : false))
+  }, [])
 
   return (
     <SafeAreaView style={styles.safeAreaViewContainer}>
@@ -25,7 +35,7 @@ const RootNavigator = () => {
         <NavigationContainer
           key={"NavigationContainer"}
           ref={navigationRef}
-          theme={true ? colors?.dark : colors?.light}
+          theme={global?.isDarkTheme ? colors?.dark : colors?.light}
           onReady={() => {
             routeNameRef.current =
               navigationRef.current.getCurrentRoute()?.name;
@@ -33,7 +43,7 @@ const RootNavigator = () => {
           onStateChange={() => {
             const currentRouteName =
               navigationRef.current.getCurrentRoute()?.name;
-            console.log("screen name", currentRouteName);
+            console.log("ScreenName", currentRouteName);
             routeNameRef.current = currentRouteName;
           }}
         >
@@ -42,6 +52,24 @@ const RootNavigator = () => {
               key={ROUTES.TAB}
               name={ROUTES.TAB}
               component={Tabs}
+              options={{ headerShown: false }}
+            />
+            <Stack.Screen
+              key={ROUTES.SCREENS.DASHBOARD_ANIMATION_SCREEN}
+              name={ROUTES.SCREENS.DASHBOARD_ANIMATION_SCREEN}
+              component={DashboardAnimationScreen}
+              options={{ headerShown: false }}
+            />
+            <Stack.Screen
+              key={ROUTES.SCREENS.DISCORD_REACTION_BUTTON_SCREEN}
+              name={ROUTES.SCREENS.DISCORD_REACTION_BUTTON_SCREEN}
+              component={DiscordReactionButtonScreen}
+              options={{ headerShown: false }}
+            />
+            <Stack.Screen
+              key={ROUTES.SCREENS.TAP_TO_POP_COUNTER_SCREEN}
+              name={ROUTES.SCREENS.TAP_TO_POP_COUNTER_SCREEN}
+              component={TapToPopCounterScreen}
               options={{ headerShown: false }}
             />
           </Stack.Navigator>
@@ -53,7 +81,6 @@ const RootNavigator = () => {
 
 const Tabs = () => {
   const { colors } = useTheme();
-  console.log(colors);
   return (
     <Tab.Navigator
       key={"Tab.Navigator"}
@@ -62,9 +89,19 @@ const Tabs = () => {
         tabBarStyle: Platform.select({
           ios: {
             backgroundColor: "transparent",
+            shadowColor: 'transparent',
+            shadowOpacity: 0,
+            shadowRadius: 0,
+            elevation: 0,
+            overflow: 'hidden',
           },
           android: {
             backgroundColor: "transparent",
+            shadowColor: 'transparent',
+            shadowOpacity: 0,
+            shadowRadius: 0,
+            elevation: 0,
+            overflow: 'hidden',
           },
         }),
         tabBarBackground: () => {

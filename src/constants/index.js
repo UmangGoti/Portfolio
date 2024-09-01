@@ -5,4 +5,9 @@ export const ROUTES = {
     EXPLORE: "Explore",
     SETTINGS: "Settings",
   },
+  SCREENS: {
+    DASHBOARD_ANIMATION_SCREEN: 'DashboardAnimationScreen',
+    DISCORD_REACTION_BUTTON_SCREEN: 'DiscordReactionButtonScreen',
+    TAP_TO_POP_COUNTER_SCREEN: 'TapToPopCounterScreen'
+  }
 };
