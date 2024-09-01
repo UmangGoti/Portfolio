@@ -6,5 +6,6 @@ export { default as RandomCircularProgressBarScreen } from './RandomCircularProg
 export { default as RippleButtonScreen } from './RippleButtonScreen'
 export { default as RotatingScalingBoxScreen } from './RotatingScalingBoxScreen'
 export { default as Settings } from './Settings'
+export { default as SoundWaveScreen } from './SoundWaveScreen'
 export { default as TapToPopCounterScreen } from './TapToPopCounterScreen'
 

@@ -12,7 +12,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { ROUTES } from "../constants";
 import { STORAGE } from "../constants/storage";
 import { setMode } from "../redux/slice/globalSlice";
-import { DashboardAnimationScreen, DiscordReactionButtonScreen, Explore, MyProfile, RandomCircularProgressBarScreen, RippleButtonScreen, RotatingScalingBoxScreen, Settings, TapToPopCounterScreen } from "../screens";
+import { DashboardAnimationScreen, DiscordReactionButtonScreen, Explore, MyProfile, RandomCircularProgressBarScreen, RippleButtonScreen, RotatingScalingBoxScreen, Settings, SoundWaveScreen, TapToPopCounterScreen } from "../screens";
 import { colors } from "../theme";
 import { navigationRef } from "./NavigationUtils";
 
@@ -93,6 +93,12 @@ const RootNavigator = () => {
               key={ROUTES.SCREENS.RANDOM_CIRCULAR_PROGRESS_BAR_SCREEN}
               name={ROUTES.SCREENS.RANDOM_CIRCULAR_PROGRESS_BAR_SCREEN}
               component={RandomCircularProgressBarScreen}
+              options={{ headerShown: false }}
+            />
+            <Stack.Screen
+              key={ROUTES.SCREENS.SOUND_WAVE_SCREEN}
+              name={ROUTES.SCREENS.SOUND_WAVE_SCREEN}
+              component={SoundWaveScreen}
               options={{ headerShown: false }}
             />
           </Stack.Navigator>

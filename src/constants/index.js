@@ -12,5 +12,6 @@ export const ROUTES = {
     RIPPLE_BUTTON_SCREEN: 'RippleButtonScreen',
     ROTATING_SCALING_BOX_SCREEN: 'RotatingScalingBoxScreen',
     RANDOM_CIRCULAR_PROGRESS_BAR_SCREEN: 'RandomCircularProgressBarScreen',
+    SOUND_WAVE_SCREEN: 'SoundWaveScreen',
   }
 };

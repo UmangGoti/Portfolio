@@ -76,6 +76,7 @@ const Explore = () => {
           contentContainerStyle={styles.contentContainerStyle}
           onScroll={onScroll}
           scrollEventThrottle={16}
+          bounces={false}
         />
       </View>
     </SafeAreaView>
@@ -125,14 +126,14 @@ const data = [
     route: ROUTES.SCREENS.DASHBOARD_ANIMATION_SCREEN
   },
   {
+    title: "Sound Wave",
+    discretion: "",
+    route: ROUTES.SCREENS.SOUND_WAVE_SCREEN
+  },
+  {
     title: "Dynamic Counter Animation",
     discretion: "",
     route: ROUTES.SCREENS.DISCORD_REACTION_BUTTON_SCREEN
-  },
-  {
-    title: "Tap to Pop Counter",
-    discretion: "",
-    route: ROUTES.SCREENS.TAP_TO_POP_COUNTER_SCREEN
   },
   {
     title: "Ripple Button",
@@ -140,13 +141,18 @@ const data = [
     route: ROUTES.SCREENS.RIPPLE_BUTTON_SCREEN
   },
   {
-    title: "Rotating Scaling Box",
-    discretion: "",
-    route: ROUTES.SCREENS.ROTATING_SCALING_BOX_SCREEN
-  },
-  {
     title: "Circular Progress Bar",
     discretion: "",
     route: ROUTES.SCREENS.RANDOM_CIRCULAR_PROGRESS_BAR_SCREEN
+  },
+  {
+    title: "Tap to Pop Counter",
+    discretion: "",
+    route: ROUTES.SCREENS.TAP_TO_POP_COUNTER_SCREEN
+  },
+  {
+    title: "Rotating Scaling Box",
+    discretion: "",
+    route: ROUTES.SCREENS.ROTATING_SCALING_BOX_SCREEN
   },
 ];
