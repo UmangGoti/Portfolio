@@ -139,4 +139,9 @@ const data = [
     discretion: "",
     route: ROUTES.SCREENS.RIPPLE_BUTTON_SCREEN
   },
+  {
+    title: "Rotating Scaling Box",
+    discretion: "",
+    route: ROUTES.SCREENS.ROTATING_SCALING_BOX
+  },
 ];

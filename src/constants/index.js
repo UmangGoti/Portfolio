@@ -10,5 +10,6 @@ export const ROUTES = {
     DISCORD_REACTION_BUTTON_SCREEN: 'DiscordReactionButtonScreen',
     TAP_TO_POP_COUNTER_SCREEN: 'TapToPopCounterScreen',
     RIPPLE_BUTTON_SCREEN: 'RippleButtonScreen',
+    ROTATING_SCALING_BOX: 'RotatingScalingBoxScreen',
   }
 };
