@@ -1,5 +1,6 @@
 
 
 export const STORAGE = {
-    LANGUAGE:'Language'
+    LANGUAGE: 'Language',
+    MODE: 'mode'
 }

@@ -1,13 +1,13 @@
 import { useTheme } from "@react-navigation/native";
-import { AnimatedFlashList, FlashList } from "@shopify/flash-list";
+import { AnimatedFlashList } from "@shopify/flash-list";
 import React, { useCallback, useRef } from "react";
 import { Animated, Easing, Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
-import { fontPixel, heightPixel, normalize, pixelSizeHorizontal, sizes, typography } from "../../theme";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { ic_chevron_right } from "../../assets/images";
 import { Spacing } from "../../components";
 import { ROUTES } from "../../constants";
 import { navigate } from "../../navigation/NavigationUtils";
-import { ic_chevron_right } from "../../assets/images";
+import { fontPixel, heightPixel, normalize, pixelSizeHorizontal, sizes, typography } from "../../theme";
 
 const Explore = () => {
   const { colors } = useTheme();
@@ -142,6 +142,11 @@ const data = [
   {
     title: "Rotating Scaling Box",
     discretion: "",
-    route: ROUTES.SCREENS.ROTATING_SCALING_BOX
+    route: ROUTES.SCREENS.ROTATING_SCALING_BOX_SCREEN
+  },
+  {
+    title: "Circular Progress Bar",
+    discretion: "",
+    route: ROUTES.SCREENS.RANDOM_CIRCULAR_PROGRESS_BAR_SCREEN
   },
 ];

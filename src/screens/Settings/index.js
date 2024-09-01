@@ -1,14 +1,15 @@
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useTheme } from "@react-navigation/native";
 import { FlashList } from "@shopify/flash-list";
 import React from "react";
-import { Image, StyleSheet, Text, Touchable, View } from "react-native";
-import { heightPixel, normalize, pixelSizeHorizontal, sizes, typography } from "../../theme";
+import { Image, StyleSheet, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { Spacing, ToggleButton } from "../../components";
-import { TouchableOpacity } from "react-native-gesture-handler";
-import { ic_chevron_right } from "../../assets/images";
 import { useDispatch, useSelector } from "react-redux";
+import { ic_chevron_right } from "../../assets/images";
+import { Spacing, ToggleButton } from "../../components";
+import { STORAGE } from "../../constants/storage";
 import { setMode } from "../../redux/slice/globalSlice";
+import { heightPixel, normalize, pixelSizeHorizontal, sizes, typography } from "../../theme";
 
 const Settings = () => {
   const global = useSelector(state => state?.global)
@@ -17,7 +18,13 @@ const Settings = () => {
   const styles = createStyle(colors);
 
   const renderItem = ({ item, index }) => {
-    return <View style={styles.itemContainer}><Text style={styles.title}>{item?.title}</Text>{item?.componentType === 'Toggle' ? <ToggleButton isToggleOn={item?.value} onPressToggle={item?.onPress} /> : <Image source={ic_chevron_right} style={styles.chevronRight} resizeMode="contain" />}</View>;
+    return (<View style={styles.itemContainer}>
+      <Text style={styles.title}>{item?.title}</Text>
+      {item?.componentType === 'Toggle' ?
+        <ToggleButton isToggleOn={item?.value} onPressToggle={item?.onPress} />
+        :
+        <Image source={ic_chevron_right} style={styles.chevronRight} resizeMode="contain" />}
+    </View>);
   }
 
   const keyExtractor = (_, index) => `${index}`
@@ -29,8 +36,11 @@ const Settings = () => {
       <View style={styles.wrapper}>
         <FlashList
           data={[{
-            title: "Light/Dark", componentType: 'Toggle', value: global?.isDarkTheme, onPress: () => {
+            title: "Light/Dark", componentType: 'Toggle', value: global?.isDarkTheme, onPress: async () => {
+              console.log('called');
+
               dispatch(setMode(!global?.isDarkTheme))
+              await AsyncStorage.setItem(STORAGE.MODE, global?.isDarkTheme ? 'light' : 'dark')
             }
           }, { title: "Language" }]}
           keyExtractor={keyExtractor}

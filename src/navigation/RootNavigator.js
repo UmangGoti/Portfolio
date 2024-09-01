@@ -1,19 +1,20 @@
 import FontAwesome from "@expo/vector-icons/FontAwesome";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { NavigationContainer, useTheme } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
 import { BlurView } from "expo-blur";
 import React, { useEffect } from "react";
-import { Platform, StyleSheet, View } from "react-native";
+import { Platform, StyleSheet, useColorScheme, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { useDispatch, useSelector } from "react-redux";
 import { ROUTES } from "../constants";
-import { DashboardAnimationScreen, DiscordReactionButtonScreen, Explore, MyProfile, RippleButtonScreen, RotatingScalingBoxScreen, Settings, TapToPopCounterScreen } from "../screens";
+import { STORAGE } from "../constants/storage";
+import { setMode } from "../redux/slice/globalSlice";
+import { DashboardAnimationScreen, DiscordReactionButtonScreen, Explore, MyProfile, RandomCircularProgressBarScreen, RippleButtonScreen, RotatingScalingBoxScreen, Settings, TapToPopCounterScreen } from "../screens";
 import { colors } from "../theme";
 import { navigationRef } from "./NavigationUtils";
-import { useDispatch, useSelector } from "react-redux";
-import { useColorScheme } from 'react-native';
-import { setMode } from "../redux/slice/globalSlice";
 
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -24,10 +25,14 @@ const RootNavigator = () => {
   const routeNameRef = React.createRef();
   const styles = createStyle();
   const colorScheme = useColorScheme();
-
   useEffect(() => {
-    dispatch(setMode(colorScheme === 'dark' ? true : false))
+    setUp()
   }, [])
+
+  const setUp = async () => {
+    const mode = await AsyncStorage.getItem(STORAGE.MODE)
+    dispatch(setMode((mode || colorScheme) === 'dark' ? true : false))
+  }
 
   return (
     <SafeAreaView style={styles.safeAreaViewContainer}>
@@ -79,9 +84,15 @@ const RootNavigator = () => {
               options={{ headerShown: false }}
             />
             <Stack.Screen
-              key={ROUTES.SCREENS.ROTATING_SCALING_BOX}
-              name={ROUTES.SCREENS.ROTATING_SCALING_BOX}
+              key={ROUTES.SCREENS.ROTATING_SCALING_BOX_SCREEN}
+              name={ROUTES.SCREENS.ROTATING_SCALING_BOX_SCREEN}
               component={RotatingScalingBoxScreen}
+              options={{ headerShown: false }}
+            />
+            <Stack.Screen
+              key={ROUTES.SCREENS.RANDOM_CIRCULAR_PROGRESS_BAR_SCREEN}
+              name={ROUTES.SCREENS.RANDOM_CIRCULAR_PROGRESS_BAR_SCREEN}
+              component={RandomCircularProgressBarScreen}
               options={{ headerShown: false }}
             />
           </Stack.Navigator>

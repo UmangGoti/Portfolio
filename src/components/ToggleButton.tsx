@@ -4,13 +4,17 @@ import { Animated, Easing, StyleSheet, TouchableOpacity } from 'react-native';
 export default function ToggleButton({ onPressToggle = (p0: boolean) => { }, isToggleOn = true }) {
     const positionButton = useRef(new Animated.Value(0)).current;
 
-    const [isOn, setIsOn] = useState<boolean>(false);
-
+    const [isOn, setIsOn] = useState<boolean>(isToggleOn);
     useEffect(() => {
-        if (isToggleOn) {
-            onPress();
-        }
+        setUp()
     }, []);
+
+    const setUp = () => {
+        if (isToggleOn) {
+            setIsOn(isToggleOn)
+            startAnimToOn()
+        }
+    }
 
     const startAnimToOff = () => {
         Animated.timing(positionButton, {
