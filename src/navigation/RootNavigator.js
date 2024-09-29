@@ -5,6 +5,7 @@ import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { NavigationContainer, useTheme } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
 import { BlurView } from "expo-blur";
+import { StatusBar } from "expo-status-bar";
 import React, { useEffect } from "react";
 import { Platform, StyleSheet, useColorScheme, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -12,7 +13,23 @@ import { useDispatch, useSelector } from "react-redux";
 import { ROUTES } from "../constants";
 import { STORAGE } from "../constants/storage";
 import { setMode } from "../redux/slice/globalSlice";
-import { ColorChangingBoxAnimationScreen, DashboardAnimationScreen, DiscordReactionButtonScreen, Explore, MyProfile, RandomCircularProgressBarScreen, RippleButtonScreen, RotatingScalingBoxScreen, Settings, SoundWaveScreen, TapToPopCounterScreen } from "../screens";
+import {
+  BounceAnimationScreen,
+  ColorChangingBoxAnimationScreen,
+  DashboardAnimationScreen,
+  DiscordReactionButtonScreen,
+  Explore,
+  FlipAnimationScreen,
+  Language,
+  MyProfile,
+  RandomCircularProgressBarScreen,
+  RippleButtonScreen,
+  RotatingScalingBoxScreen,
+  Settings,
+  SoundWaveScreen,
+  TapToPopCounterScreen,
+  TextMorpherScreen,
+} from "../screens";
 import { colors } from "../theme";
 import { navigationRef } from "./NavigationUtils";
 
@@ -20,22 +37,26 @@ const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
 
 const RootNavigator = () => {
-  const global = useSelector(state => state?.global)
-  const dispatch = useDispatch()
+  const global = useSelector((state) => state?.global);
+  const dispatch = useDispatch();
   const routeNameRef = React.createRef();
   const styles = createStyle();
   const colorScheme = useColorScheme();
   useEffect(() => {
-    setUp()
-  }, [])
+    setUp();
+  }, []);
 
   const setUp = async () => {
-    const mode = await AsyncStorage.getItem(STORAGE.MODE)
-    dispatch(setMode((mode || colorScheme) === 'dark' ? true : false))
-  }
+    const mode = await AsyncStorage.getItem(STORAGE.MODE);
+    dispatch(setMode((mode || colorScheme) === "dark" ? true : false));
+  };
 
   return (
     <SafeAreaView style={styles.safeAreaViewContainer}>
+      <StatusBar
+        backgroundColor={global?.isDarkTheme ? "#000" : "#fff"}
+        style={global?.isDarkTheme ? "light" : "dark"}
+      />
       <View style={styles.wrapper}>
         <NavigationContainer
           key={"NavigationContainer"}
@@ -107,6 +128,30 @@ const RootNavigator = () => {
               component={ColorChangingBoxAnimationScreen}
               options={{ headerShown: false }}
             />
+            <Stack.Screen
+              key={ROUTES.SCREENS.LANGUAGE_SCREEN}
+              name={ROUTES.SCREENS.LANGUAGE_SCREEN}
+              component={Language}
+              options={{ headerShown: false }}
+            />
+            <Stack.Screen
+              key={ROUTES.SCREENS.TEXT_MORPHER_SCREEN}
+              name={ROUTES.SCREENS.TEXT_MORPHER_SCREEN}
+              component={TextMorpherScreen}
+              options={{ headerShown: false }}
+            />
+            <Stack.Screen
+              key={ROUTES.SCREENS.BOUNCE_ANIMATION_SCREEN}
+              name={ROUTES.SCREENS.BOUNCE_ANIMATION_SCREEN}
+              component={BounceAnimationScreen}
+              options={{ headerShown: false }}
+            />
+            <Stack.Screen
+              key={ROUTES.SCREENS.FLIP_ANIMATION_SCREEN}
+              name={ROUTES.SCREENS.FLIP_ANIMATION_SCREEN}
+              component={FlipAnimationScreen}
+              options={{ headerShown: false }}
+            />
           </Stack.Navigator>
         </NavigationContainer>
       </View>
@@ -116,6 +161,7 @@ const RootNavigator = () => {
 
 const Tabs = () => {
   const { colors } = useTheme();
+  const global = useSelector((state) => state?.global);
   return (
     <Tab.Navigator
       key={"Tab.Navigator"}
@@ -124,26 +170,30 @@ const Tabs = () => {
         tabBarStyle: Platform.select({
           ios: {
             backgroundColor: "transparent",
-            shadowColor: 'transparent',
+            shadowColor: "transparent",
             shadowOpacity: 0,
             shadowRadius: 0,
             elevation: 0,
-            overflow: 'hidden',
+            overflow: "hidden",
+            position: "absolute",
           },
           android: {
-            backgroundColor: "transparent",
-            shadowColor: 'transparent',
+            backgroundColor: global?.isDarkTheme
+              ? "rgba(0,0,0,0.9)"
+              : "rgba(255,255,255,0.9)",
+            shadowColor: "transparent",
             shadowOpacity: 0,
             shadowRadius: 0,
             elevation: 0,
-            overflow: 'hidden',
+            overflow: "hidden",
+            position: "absolute",
           },
         }),
         tabBarBackground: () => {
           return (
             <BlurView
-              blurType={true ? "dark" : "light"}
-              blurAmount={8}
+              blurType={global?.isDarkTheme ? "dark" : "light"}
+              blurAmount={10}
               style={StyleSheet.absoluteFill}
             />
           );

@@ -1,56 +1,89 @@
+import { MaterialIcons } from "@expo/vector-icons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useTheme } from "@react-navigation/native";
-import { FlashList } from "@shopify/flash-list";
 import React from "react";
-import { Image, StyleSheet, Text, View } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
+import { Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
 import { ic_chevron_right } from "../../assets/images";
-import { Spacing, ToggleButton } from "../../components";
+import { ParallaxScrollView, Spacing, ToggleButton } from "../../components";
+import { ROUTES } from "../../constants";
 import { STORAGE } from "../../constants/storage";
+import { navigate } from "../../navigation/NavigationUtils";
 import { setMode } from "../../redux/slice/globalSlice";
-import { heightPixel, normalize, pixelSizeHorizontal, sizes, typography } from "../../theme";
+import {
+  fontPixel,
+  normalize,
+  pixelSizeHorizontal,
+  sizes,
+  typography,
+} from "../../theme";
 
 const Settings = () => {
-  const global = useSelector(state => state?.global)
-  const dispatch = useDispatch()
+  const global = useSelector((state) => state?.global);
+  const dispatch = useDispatch();
   const { colors } = useTheme();
   const styles = createStyle(colors);
 
-  const renderItem = ({ item, index }) => {
-    return (<View style={styles.itemContainer}>
-      <Text style={styles.title}>{item?.title}</Text>
-      {item?.componentType === 'Toggle' ?
-        <ToggleButton isToggleOn={item?.value} onPressToggle={item?.onPress} />
-        :
-        <Image source={ic_chevron_right} style={styles.chevronRight} resizeMode="contain" />}
-    </View>);
-  }
+  const renderItem = (item, index) => {
+    return (
+      <TouchableOpacity
+        key={index}
+        activeOpacity={0.9}
+        style={styles.itemContainer}
+        onPress={item?.onPress}
+      >
+        <Text style={styles.title}>{item?.title}</Text>
+        {item?.componentType === "Toggle" ? (
+          <ToggleButton
+            isToggleOn={item?.value}
+            onPressToggle={item?.onPress}
+          />
+        ) : (
+          <Image
+            source={ic_chevron_right}
+            style={styles.chevronRight}
+            resizeMode="contain"
+          />
+        )}
+      </TouchableOpacity>
+    );
+  };
 
-  const keyExtractor = (_, index) => `${index}`
+  const keyExtractor = (_, index) => `${index}`;
 
   const ItemSeparatorComponent = () => <Spacing size={10} />;
 
   return (
-    <SafeAreaView style={{ flex: 1 }} edges={["top"]}>
+    <ParallaxScrollView
+      headerBackgroundColor={global?.isDarkTheme ? "#1D3D47" : "#A1CEDC"}
+      headerImage={
+        <MaterialIcons size={310} name="settings" style={styles.headerImage} />
+      }
+    >
       <View style={styles.wrapper}>
-        <FlashList
-          data={[{
-            title: "Light/Dark", componentType: 'Toggle', value: global?.isDarkTheme, onPress: async () => {
-              console.log('called');
-
-              dispatch(setMode(!global?.isDarkTheme))
-              await AsyncStorage.setItem(STORAGE.MODE, global?.isDarkTheme ? 'light' : 'dark')
-            }
-          }, { title: "Language" }]}
-          keyExtractor={keyExtractor}
-          renderItem={renderItem}
-          contentContainerStyle={styles.contentContainerStyle}
-          ItemSeparatorComponent={ItemSeparatorComponent}
-          estimatedItemSize={normalize(75)}
-        />
+        <Text style={styles.headerText}>Settings</Text>
+        {[
+          {
+            title: "Light/Dark",
+            componentType: "Toggle",
+            value: global?.isDarkTheme,
+            onPress: async () => {
+              dispatch(setMode(!global?.isDarkTheme));
+              await AsyncStorage.setItem(
+                STORAGE.MODE,
+                global?.isDarkTheme ? "light" : "dark"
+              );
+            },
+          },
+          {
+            title: "Language",
+            onPress: () => {
+              navigate(ROUTES.SCREENS.LANGUAGE_SCREEN);
+            },
+          },
+        ].map(renderItem)}
       </View>
-    </SafeAreaView>
+    </ParallaxScrollView>
   );
 };
 
@@ -58,30 +91,46 @@ export default Settings;
 
 const createStyle = (colors) => {
   return StyleSheet.create({
-    wrapper: { flex: 1 },
+    wrapper: {
+      flex: 1,
+      backgroundColor: colors.background,
+      gap: 10,
+      paddingHorizontal: sizes.paddingHorizontal,
+      paddingVertical: sizes.paddingVertical,
+    },
     itemContainer: {
-      marginHorizontal: sizes.marginHorizontal,
       paddingHorizontal: pixelSizeHorizontal(20),
       paddingVertical: pixelSizeHorizontal(20),
+      maxHeight: normalize(60),
       borderRadius: normalize(12),
       elevation: 5, // For Android shadow
-      shadowColor: '#000',
+      shadowColor: "#000",
       shadowOffset: { width: 0, height: 2 }, // For iOS shadow
       shadowOpacity: 0.2,
       shadowRadius: 2,
       backgroundColor: colors.white,
-      justifyContent: 'space-between',
-      flexDirection: 'row',
-      alignItems: 'center',
-      minHeight: normalize(70)
+      flexDirection: "row",
+      justifyContent: "space-between",
+      alignItems: "center",
     },
-    contentContainerStyle: { paddingBottom: heightPixel(100), paddingVertical: sizes.paddingVertical },
     title: {
       ...typography.fontStyles.nunitoBold,
     },
     chevronRight: {
       width: normalize(20),
-      height: normalize(20)
-    }
+      height: normalize(20),
+    },
+    headerText: {
+      fontSize: fontPixel(35),
+      color: "black",
+      ...typography.fontStyles.nunitoBold,
+      color: colors?.header?.color,
+    },
+    headerImage: {
+      color: "#fff",
+      bottom: -90,
+      left: -35,
+      position: "absolute",
+    },
   });
 };

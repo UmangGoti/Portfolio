@@ -39,12 +39,7 @@ const pixelSizeHorizontal = (size: number) => {
 };
 
 export {
-  widthPixel,
-  heightPixel,
-  fontPixel,
-  pixelSizeVertical,
-  pixelSizeHorizontal,
-  normalize
+  fontPixel, heightPixel, normalize, pixelSizeHorizontal, pixelSizeVertical, widthPixel
 };
 
 const commonColors = {
@@ -73,6 +68,7 @@ export const colors = {
       text: "rgb(0, 0, 0)",
       tabIconColor: "rgba(0,0,0,0.5)",
       tabIconColorFocused: "rgb(0,0,0)",
+      statusbar: "rgb(255, 255, 255)",
       header: {
         color: '#000',
         borderBottomColor: '#000'
@@ -83,6 +79,11 @@ export const colors = {
         textColor: '#fff',
         backgroundColor: '#000',
         counterContainerColor: '#fff'
+      },
+      radioButton: {
+        textColor: '#000',
+        borderColor: '#000',
+        radioColor: '#000',
       }
     },
   },
@@ -96,6 +97,7 @@ export const colors = {
       text: "rgb(255,255,255)",
       tabIconColor: "rgba(255,255,255,0.5)",
       tabIconColorFocused: "rgb(255,255,255)",
+      statusbar: "rgb(0, 0, 0)",
       header: {
         color: '#fff',
         borderBottomColor: '#fff',
@@ -106,6 +108,11 @@ export const colors = {
         textColor: '#000',
         backgroundColor: '#fff',
         counterContainerColor: '#000',
+      },
+      radioButton: {
+        textColor: '#fff',
+        borderColor: '#fff',
+        radioColor: '#fff',
       }
     },
   },

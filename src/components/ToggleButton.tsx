@@ -36,7 +36,7 @@ export default function ToggleButton({ onPressToggle = (p0: boolean) => { }, isT
 
     const positionInterPol = positionButton.interpolate({
         inputRange: [0, 1],
-        outputRange: [4, 28],
+        outputRange: [4, 24],
     });
 
     const backgroundColorAnim = positionButton.interpolate({
@@ -62,7 +62,7 @@ export default function ToggleButton({ onPressToggle = (p0: boolean) => { }, isT
 
     return (
         <TouchableOpacity
-            style={{ height: 30, width: 30, alignItems: 'center' }}
+            style={{ height: 28, width: 28, alignItems: 'center' }}
             activeOpacity={0.9}
             onPress={onPress}>
             <Animated.View
@@ -98,8 +98,8 @@ const styles = StyleSheet.create({
         padding: 8,
     },
     basicStyle: {
-        height: 28,
-        width: 28,
+        height: 20,
+        width: 20,
         borderRadius: 20,
         shadowOffset: { width: -2, height: 4 },
         shadowColor: '#171717',
@@ -109,8 +109,8 @@ const styles = StyleSheet.create({
     mainStyes: {
         borderRadius: 30,
         backgroundColor: '#fff',
-        height: 34,
-        width: 60,
+        height: 28,
+        width: 48,
         justifyContent: 'center',
     },
 });

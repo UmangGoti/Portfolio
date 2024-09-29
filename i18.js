@@ -39,6 +39,7 @@ export const isRTL = false;
 ReactNative.I18nManager.allowRTL(isRTL);
 
 // The method we'll use instead of a regular string.
+// Ex. strings('Profile.name')
 export const strings = (name, params = {}) => {
   return i18n.t(name, params);
 };
