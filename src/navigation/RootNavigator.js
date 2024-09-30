@@ -23,6 +23,7 @@ import {
   FlipAnimationScreen,
   Language,
   MyProfile,
+  PasscodeScreen,
   RandomCircularProgressBarScreen,
   RippleButtonScreen,
   RotatingScalingBoxScreen,
@@ -157,6 +158,12 @@ const RootNavigator = () => {
               key={ROUTES.SCREENS.BUBBLE_SORT_SCREEN}
               name={ROUTES.SCREENS.BUBBLE_SORT_SCREEN}
               component={BubbleSortScreen}
+              options={{ headerShown: false }}
+            />
+            <Stack.Screen
+              key={ROUTES.SCREENS.PASSCODE_SCREEN}
+              name={ROUTES.SCREENS.PASSCODE_SCREEN}
+              component={PasscodeScreen}
               options={{ headerShown: false }}
             />
           </Stack.Navigator>

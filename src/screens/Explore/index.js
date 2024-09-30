@@ -175,8 +175,13 @@ const data = [
     route: ROUTES.SCREENS.FLIP_ANIMATION_SCREEN,
   },
   {
-    title: "Bubble sort Animations",
+    title: "Bubble Sort Animations",
     discretion: "",
     route: ROUTES.SCREENS.BUBBLE_SORT_SCREEN,
+  },
+  {
+    title: "Passcode UI",
+    discretion: "",
+    route: ROUTES.SCREENS.PASSCODE_SCREEN,
   },
 ];

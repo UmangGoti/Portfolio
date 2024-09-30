@@ -19,5 +19,6 @@ export const ROUTES = {
     BOUNCE_ANIMATION_SCREEN: "BounceAnimationScreen",
     FLIP_ANIMATION_SCREEN: "FlipAnimationScreen",
     BUBBLE_SORT_SCREEN: "BubbleSortScreen",
+    PASSCODE_SCREEN: "PasscodeScreen",
   },
 };
