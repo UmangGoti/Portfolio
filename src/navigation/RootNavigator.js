@@ -15,6 +15,7 @@ import { STORAGE } from "../constants/storage";
 import { setMode } from "../redux/slice/globalSlice";
 import {
   BounceAnimationScreen,
+  BubbleSortScreen,
   ColorChangingBoxAnimationScreen,
   DashboardAnimationScreen,
   DiscordReactionButtonScreen,
@@ -150,6 +151,12 @@ const RootNavigator = () => {
               key={ROUTES.SCREENS.FLIP_ANIMATION_SCREEN}
               name={ROUTES.SCREENS.FLIP_ANIMATION_SCREEN}
               component={FlipAnimationScreen}
+              options={{ headerShown: false }}
+            />
+            <Stack.Screen
+              key={ROUTES.SCREENS.BUBBLE_SORT_SCREEN}
+              name={ROUTES.SCREENS.BUBBLE_SORT_SCREEN}
+              component={BubbleSortScreen}
               options={{ headerShown: false }}
             />
           </Stack.Navigator>

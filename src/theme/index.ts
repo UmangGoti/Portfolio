@@ -69,6 +69,7 @@ export const colors = {
       tabIconColor: "rgba(0,0,0,0.5)",
       tabIconColorFocused: "rgb(0,0,0)",
       statusbar: "rgb(255, 255, 255)",
+      borderColor: "rgb(0, 0, 0)",
       header: {
         color: '#000',
         borderBottomColor: '#000'
@@ -98,6 +99,7 @@ export const colors = {
       tabIconColor: "rgba(255,255,255,0.5)",
       tabIconColorFocused: "rgb(255,255,255)",
       statusbar: "rgb(0, 0, 0)",
+      borderColor: "rgb(255, 255, 255)",
       header: {
         color: '#fff',
         borderBottomColor: '#fff',

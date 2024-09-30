@@ -174,4 +174,9 @@ const data = [
     discretion: "",
     route: ROUTES.SCREENS.FLIP_ANIMATION_SCREEN,
   },
+  {
+    title: "Bubble sort Animations",
+    discretion: "",
+    route: ROUTES.SCREENS.BUBBLE_SORT_SCREEN,
+  },
 ];

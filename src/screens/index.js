@@ -13,3 +13,4 @@ export { default as Settings } from "./Settings";
 export { default as SoundWaveScreen } from "./SoundWaveScreen";
 export { default as TapToPopCounterScreen } from "./TapToPopCounterScreen";
 export { default as TextMorpherScreen } from "./TextMorpherScreen";
+export { default as BubbleSortScreen } from "./Sorts/BubbleSortScreen";

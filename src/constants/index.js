@@ -18,5 +18,6 @@ export const ROUTES = {
     TEXT_MORPHER_SCREEN: "TextMorpherScreen",
     BOUNCE_ANIMATION_SCREEN: "BounceAnimationScreen",
     FLIP_ANIMATION_SCREEN: "FlipAnimationScreen",
+    BUBBLE_SORT_SCREEN: "BubbleSortScreen",
   },
 };

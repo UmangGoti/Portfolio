@@ -119,15 +119,16 @@ const createStyle = (colors) =>
     animatedContainer: {
       width: "100%",
       height: normalize(50),
-      backgroundColor: "white",
+      backgroundColor: colors.backgroundColor,
       borderRadius: 12,
       justifyContent: "center",
       alignItems: "center",
       borderWidth: 2,
-      borderColor: "black",
+      borderColor: colors.borderColor,
     },
     animationTitle: {
       ...typography.fontStyles.nunitoSemiBold,
+      color: colors.text,
     },
     buttonContainer: {
       flexWrap: "wrap",
@@ -136,17 +137,17 @@ const createStyle = (colors) =>
       gap: 20,
     },
     button: {
-      height: normalize(40),
-      backgroundColor: "white",
-      minWidth: "45%",
+      height: normalize(45),
+      backgroundColor: colors.backgroundColor,
+      minWidth: "42%",
       borderRadius: 6,
       justifyContent: "center",
       alignItems: "center",
       borderWidth: 1,
-      borderColor: "black",
+      borderColor: colors.borderColor,
     },
     title: {
       ...typography.fontStyles.nunitoBold,
-      color: "black",
+      color: colors.text,
     },
   });

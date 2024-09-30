@@ -18,30 +18,49 @@ import { Spacing } from "../../components";
 import { normalize, sizes, typography } from "../../theme";
 
 const data = [
-  { title: "BounceIn", type: () => new BounceIn() },
-  { title: "BounceOut", type: () => new BounceOut() },
-  { title: "BounceInLeft", type: () => new BounceInLeft() },
-  { title: "BounceOutLeft", type: () => new BounceOutLeft() },
-  { title: "BounceInRight", type: () => new BounceInRight() },
-  { title: "BounceOutRight", type: () => new BounceOutRight() },
-  { title: "BounceInUp", type: () => new BounceInUp() },
-  { title: "BounceOutUp", type: () => new BounceOutUp() },
-  { title: "BounceInDown", type: () => new BounceInDown() },
-  { title: "BounceOutDown", type: () => new BounceOutDown() },
+  {
+    title: "Bounce(In/Out)Left",
+    typeEntry: () => new BounceInLeft(),
+    typeExit: () => new BounceOutLeft(),
+  },
+  {
+    title: "Bounce(In/Out)Right",
+    typeEntry: () => new BounceInRight(),
+    typeExit: () => new BounceOutRight(),
+  },
+  {
+    title: "Bounce(In/Out)Up",
+    typeEntry: () => new BounceInUp(),
+    typeExit: () => new BounceOutUp(),
+  },
+  {
+    title: "Bounce(In/Out)Down",
+    typeEntry: () => new BounceInDown(),
+    typeExit: () => new BounceOutDown(),
+  },
+  {
+    title: "Bounce(In/Out)",
+    typeEntry: () => new BounceIn(),
+    typeExit: () => new BounceOut(),
+  },
 ];
 
 const BounceAnimationScreen = () => {
-  const [animationType, setAnimationType] = useState(null);
+  const [animationTypeEntry, setAnimationTypeEntry] = useState(null);
+  const [animationTypeExit, setAnimationTypeExit] = useState(null);
   const [visible, setVisible] = useState(true);
   const { colors } = useTheme();
   const styles = createStyle(colors);
 
-  const handleAnimation = (type) => {
+  const handleAnimation = (param) => {
     setVisible(false);
     setTimeout(() => {
-      setAnimationType(type());
+      setAnimationTypeEntry(param?.typeEntry());
+      setTimeout(() => {
+        setAnimationTypeExit(param?.typeExit());
+      }, 400);
       setVisible(true);
-    }, 100);
+    }, 500);
   };
 
   return (
@@ -50,7 +69,8 @@ const BounceAnimationScreen = () => {
         {visible && (
           <Animated.View
             style={styles.animatedContainer}
-            entering={animationType}
+            entering={animationTypeEntry}
+            exiting={animationTypeExit}
           >
             <Text style={styles.animationTitle}>Animation Box</Text>
           </Animated.View>
@@ -63,7 +83,7 @@ const BounceAnimationScreen = () => {
             key={index}
             activeOpacity={0.9}
             style={styles.button}
-            onPress={() => handleAnimation(item.type)}
+            onPress={() => handleAnimation(item)}
           >
             <Text style={styles.title}>{item.title}</Text>
           </TouchableOpacity>
@@ -92,15 +112,16 @@ const createStyle = (colors) =>
     animatedContainer: {
       width: "100%",
       height: normalize(50),
-      backgroundColor: "white",
+      backgroundColor: colors.backgroundColor,
       borderRadius: 12,
       justifyContent: "center",
       alignItems: "center",
       borderWidth: 2,
-      borderColor: "black",
+      borderColor: colors.borderColor,
     },
     animationTitle: {
       ...typography.fontStyles.nunitoSemiBold,
+      color: colors.text,
     },
     buttonContainer: {
       flexWrap: "wrap",
@@ -109,17 +130,17 @@ const createStyle = (colors) =>
       gap: 20,
     },
     button: {
-      height: normalize(40),
-      backgroundColor: "white",
-      minWidth: "45%",
+      height: normalize(45),
+      backgroundColor: colors.backgroundColor,
+      minWidth: "42%",
       borderRadius: 6,
       justifyContent: "center",
       alignItems: "center",
       borderWidth: 1,
-      borderColor: "black",
+      borderColor: colors.borderColor,
     },
     title: {
       ...typography.fontStyles.nunitoBold,
-      color: "black",
+      color: colors.text,
     },
   });

@@ -2,12 +2,5 @@ const ic_arrow_left = require("./ic_arrow_left.png");
 const ic_arrow_right = require("./ic_arrow_right.png");
 const ic_chevron_left = require("./ic_chevron_left.png");
 const ic_chevron_right = require("./ic_chevron_right.png");
-const profile_pic = require("./profile_pic.jpg");
 
-export {
-  ic_arrow_left,
-  ic_arrow_right,
-  ic_chevron_left,
-  ic_chevron_right,
-  profile_pic,
-};
+export { ic_arrow_left, ic_arrow_right, ic_chevron_left, ic_chevron_right };
