@@ -8,7 +8,6 @@ export {
   ic_arrow_left,
   ic_arrow_right,
   ic_backspace,
-  ic_chevron_left,‚
-  ic_chevron_right
+  ic_chevron_left,
+  ic_chevron_right,
 };
-

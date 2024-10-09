@@ -13,20 +13,20 @@
       "backgroundColor": "#ffffff"
     },
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.ios.portfolio"
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./src/assets/images/adaptive-icon.png",
         "backgroundColor": "#ffffff"
-      }
+      },
+      "package": "com.android.portfolio",
+      "userInterfaceStyle": "automatic"
     },
     "experiments": {
       "typedRoutes": true
     },
-    "plugins": [
-      "expo-localization",
-      "expo-font"
-    ]
+    "plugins": ["expo-localization", "expo-font"]
   }
 }
