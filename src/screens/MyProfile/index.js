@@ -1,20 +1,52 @@
 import { useTheme } from "@react-navigation/native";
-import React from "react";
+import React, { useEffect } from "react";
 import { StyleSheet, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { fontPixel, normalize, typography } from "../../theme/index";
 import Device from "../../utils/device";
-
-const HEADER_MAX_DISTANCE = normalize(360);
-const HEADER_MIN_DISTANCE = HEADER_MAX_DISTANCE / 2;
-const SCROLL_DISTANCE = HEADER_MAX_DISTANCE - HEADER_MIN_DISTANCE;
-const deviceWidth = Device.getDeviceWidth();
+import QuickCrypto from "react-native-quick-crypto";
+import { ethers } from "ethers";
+import {
+  createEVMWallet,
+  createSolWallet,
+  createTrxWallet,
+  createWalletMnemonic,
+} from "../../web3-wallet";
 
 const MyProfile = () => {
   const { colors } = useTheme();
   const insets = useSafeAreaInsets();
   const styles = createStyle(colors);
-
+  useEffect(() => {
+    createWalletMnemonic()
+      .then((res) => {
+        console.log(res);
+        createEVMWallet(res?.mnemonic, 0)
+          .then((wallet) => {
+            console.log("Eth - ", wallet);
+          })
+          .catch((e) => {
+            console.error(e);
+          });
+        createTrxWallet(res?.mnemonic, 0)
+          .then((wallet) => {
+            console.log("Tron - ", wallet);
+          })
+          .catch((e) => {
+            console.error(e);
+          });
+        createSolWallet(res?.mnemonic, 0)
+          .then((wallet) => {
+            console.log("Solana - ", wallet);
+          })
+          .catch((e) => {
+            console.error(e);
+          });
+      })
+      .catch((e) => {
+        console.error(e);
+      });
+  }, []);
   return <View></View>;
 };
 
