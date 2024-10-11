@@ -8,7 +8,6 @@ const defaultConfig = getDefaultConfig(__dirname);
 defaultConfig.resolver.extraNodeModules = {
   // Aliases defined in babel.config.js
   crypto: path.resolve(__dirname, "node_modules/react-native-quick-crypto"),
-  // Add more modules here if needed
 };
 
 // Include any additional resolver configurations if necessary
