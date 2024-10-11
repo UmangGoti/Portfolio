@@ -1,13 +1,15 @@
 import { useIsFocused, useTheme } from "@react-navigation/native";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useReducer, useState } from "react";
 import { Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
 import {
   SafeAreaView,
   useSafeAreaInsets,
 } from "react-native-safe-area-context";
 import {
+  createBtcWallet,
   createEVMWallet,
   createSolWallet,
+  createTrxWallet,
   createWalletMnemonic,
 } from "../../web3/web3-wallet";
 import { fontPixel, normalize, sizes, typography } from "../../theme";
@@ -17,6 +19,8 @@ import { Ionicons } from "@expo/vector-icons";
 import { Image } from "expo-image";
 import { toDataUrl } from "../../web3/Blockies";
 import { icon } from "../../assets/images";
+import { useDispatch, useSelector } from "react-redux";
+import { createWallet } from "../../redux/slice/walletSlice";
 
 const Wallet = () => {
   const { colors } = useTheme();
@@ -24,16 +28,33 @@ const Wallet = () => {
   const focused = useIsFocused();
   const [wallets, setWallets] = useState([]);
   const [loading, setLoading] = useState(false);
+  const wallet = useSelector((state) => state?.wallet);
+  const dispatch = useDispatch();
   useEffect(() => {
-    createWallets();
+    if (wallet?.ethAccounts?.length === 0) {
+      createWallets();
+    } else {
+      setWallets(wallet?.ethAccounts);
+    }
   }, [focused]);
 
   const createWallets = async () => {
     if (focused) {
       setLoading(true);
       const wallet = await createWalletMnemonic();
-      const account = await createEVMWallet(wallet?.mnemonic, 0);
-      setWallets([account]);
+      const evmWallet = await createEVMWallet(wallet?.mnemonic, 0);
+      const trxWallet = await createTrxWallet(wallet?.mnemonic, 0);
+      const solWallet = await createSolWallet(wallet?.mnemonic, 0);
+      const btcWallet = await createBtcWallet(wallet?.mnemonic, 0);
+      setWallets([evmWallet]);
+      dispatch(
+        createWallet({
+          ethAccount: evmWallet,
+          solAccount: trxWallet,
+          btcAccount: solWallet,
+          tronAccount: btcWallet,
+        })
+      );
       setLoading(false);
     }
   };
