@@ -15,3 +15,4 @@ export { default as BubbleSortScreen } from "./Sorts/BubbleSortScreen";
 export { default as SoundWaveScreen } from "./SoundWaveScreen";
 export { default as TapToPopCounterScreen } from "./TapToPopCounterScreen";
 export { default as TextMorpherScreen } from "./TextMorpherScreen";
+export { default as Wallet } from "./Wallet";

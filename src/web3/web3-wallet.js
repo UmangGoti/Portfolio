@@ -9,32 +9,36 @@ import hdkey from "hdkey";
 
 export async function createWalletMnemonic() {
   return await new Promise((resolve, reject) => {
-    try {
-      const mnemonic = generateMnemonic();
-      let seed = mnemonicToSeedSync(mnemonic).toString("hex");
-      resolve({ mnemonic, seed });
-    } catch (error) {
-      reject(error);
-    }
+    setTimeout(async () => {
+      try {
+        const mnemonic = generateMnemonic();
+        let seed = mnemonicToSeedSync(mnemonic).toString("hex");
+        resolve({ mnemonic, seed });
+      } catch (error) {
+        reject(error);
+      }
+    }, 200);
   });
 }
 
 export async function createEVMWallet(mnemonic, index) {
   return await new Promise((resolve, reject) => {
-    try {
-      let seed = mnemonicToSeedSync(mnemonic).toString("hex");
-      const seedBuffer = Buffer.from(seed, "hex");
-      const masterSeed = _ethHdkey.fromMasterSeed(seedBuffer);
-      const hardenedKey = masterSeed.derivePath("m/44'/60'/0'/0");
+    setTimeout(() => {
+      try {
+        let seed = mnemonicToSeedSync(mnemonic).toString("hex");
+        const seedBuffer = Buffer.from(seed, "hex");
+        const masterSeed = _ethHdkey.fromMasterSeed(seedBuffer);
+        const hardenedKey = masterSeed.derivePath("m/44'/60'/0'/0");
 
-      const derivedChild = hardenedKey.deriveChild(index);
-      const wallet = derivedChild.getWallet();
-      const address = wallet.getChecksumAddressString();
-      const privateKey = wallet.getPrivateKey().toString("hex");
-      resolve({ address, privateKey, mnemonic });
-    } catch (error) {
-      reject(error);
-    }
+        const derivedChild = hardenedKey.deriveChild(index);
+        const wallet = derivedChild.getWallet();
+        const address = wallet.getChecksumAddressString();
+        const privateKey = wallet.getPrivateKey().toString("hex");
+        resolve({ address, privateKey, mnemonic });
+      } catch (error) {
+        reject(error);
+      }
+    }, 200);
   });
 }
 

@@ -1,6 +1,6 @@
 import { Ionicons } from "@expo/vector-icons";
 import { useTheme } from "@react-navigation/native";
-import React, { useRef } from "react";
+import React, { useCallback, useRef } from "react";
 import {
   Animated,
   Image,
@@ -32,7 +32,7 @@ const Explore = () => {
     navigate(item?.route);
   };
 
-  const renderItem = (item, index) => {
+  const renderItem = useCallback((item, index) => {
     return (
       <TouchableOpacity
         key={index}
@@ -50,9 +50,10 @@ const Explore = () => {
         />
       </TouchableOpacity>
     );
-  };
+  }, []);
 
-  const ItemSeparatorComponent = () => <Spacing size={10} />;
+  const ItemSeparatorComponent = () =>
+    useCallback(() => <Spacing size={10} />, []);
 
   return (
     <ParallaxScrollView

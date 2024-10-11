@@ -31,6 +31,7 @@ import {
   SoundWaveScreen,
   TapToPopCounterScreen,
   TextMorpherScreen,
+  Wallet,
 } from "../screens";
 import { colors } from "../theme";
 import { navigationRef } from "./NavigationUtils";
@@ -224,6 +225,28 @@ const Tabs = () => {
             return (
               <FontAwesome
                 name="user"
+                size={24}
+                color={
+                  focused ? colors?.tabIconColorFocused : colors?.tabIconColor
+                }
+              />
+            );
+          },
+          tabBarLabel: () => {
+            return <></>;
+          },
+        }}
+      />
+      <Tab.Screen
+        key={ROUTES.TABS.WALLET}
+        name={ROUTES.TABS.WALLET}
+        component={Wallet}
+        options={{
+          headerShown: false,
+          tabBarIcon: ({ focused }) => {
+            return (
+              <MaterialIcons
+                name="wallet"
                 size={24}
                 color={
                   focused ? colors?.tabIconColorFocused : colors?.tabIconColor

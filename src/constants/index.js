@@ -2,6 +2,7 @@ export const ROUTES = {
   TAB: "Tab",
   TABS: {
     MY_PROFILE: "MyProfile",
+    WALLET: "Wallet",
     EXPLORE: "Explore",
     SETTINGS: "Settings",
   },

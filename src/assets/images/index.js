@@ -3,6 +3,7 @@ const ic_arrow_right = require("./ic_arrow_right.png");
 const ic_chevron_left = require("./ic_chevron_left.png");
 const ic_chevron_right = require("./ic_chevron_right.png");
 const ic_backspace = require("./ic_backspace.png");
+const icon = require("./icon.png");
 
 export {
   ic_arrow_left,
@@ -10,4 +11,5 @@ export {
   ic_backspace,
   ic_chevron_left,
   ic_chevron_right,
+  icon,
 };

@@ -54,6 +54,7 @@ const commonColors = {
   purple: 'rgb(160, 32, 240)',
   gray: 'rgb(128,128,128)',
   transparent: 'transparent',
+  appIcon: '#007AFF'
 }
 
 // colors
