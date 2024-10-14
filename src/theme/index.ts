@@ -86,6 +86,14 @@ export const colors = {
         textColor: '#000',
         borderColor: '#000',
         radioColor: '#000',
+      },
+      bottomSheet: {
+        backgroundColor: '#fff',
+        panColor: 'rgba(0,0,0,0.4)',
+        dividerLine: 'rgba(0,0,0,0.4)',
+        overlay: 'rgba(0,0,0,0.4)',
+        selectedItemBorderColor: 'rgba(0,0,0,0.4)',
+        accountPicBorderColor: 'rgba(0,0,0,0.4)',
       }
     },
   },
@@ -116,6 +124,14 @@ export const colors = {
         textColor: '#fff',
         borderColor: '#fff',
         radioColor: '#fff',
+      },
+      bottomSheet: {
+        backgroundColor: '#000',
+        panColor: 'rgba(255,255,255,0.4)',
+        dividerColor: 'rgba(255,255,255,0.4)',
+        overlay: 'rgba(225,225,225,0.3)',
+        selectedItemBorderColor: 'rgba(255,255,255,0.4)',
+        accountPicBorderColor: 'rgba(255,255,255,0.4)',
       }
     },
   },
