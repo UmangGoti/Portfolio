@@ -1,19 +1,19 @@
-import TronWeb from "@sekah/tronweb-rn";
-import solanaWeb3 from "@solana/web3.js";
-import { generateMnemonic, mnemonicToSeedSync } from "bip39";
-import * as bitcoin from "bitcoinjs-lib";
-import { Buffer } from "buffer";
-import { hdkey as _ethHdkey } from "ethereumjs-wallet";
-import { Wallet } from "ethers";
-import hdkey from "hdkey";
+import TronWeb from '@sekah/tronweb-rn';
+import solanaWeb3 from '@solana/web3.js';
+import {generateMnemonic, mnemonicToSeedSync} from 'bip39';
+import * as bitcoin from 'bitcoinjs-lib';
+import {Buffer} from 'buffer';
+import {hdkey as _ethHdkey} from 'ethereumjs-wallet';
+import {ethers, Wallet} from 'ethers';
+import hdkey from 'hdkey';
 
 export async function createWalletMnemonic() {
   return await new Promise((resolve, reject) => {
     setTimeout(async () => {
       try {
         const mnemonic = generateMnemonic();
-        let seed = mnemonicToSeedSync(mnemonic).toString("hex");
-        resolve({ mnemonic, seed });
+        let seed = mnemonicToSeedSync(mnemonic).toString('hex');
+        resolve({mnemonic, seed});
       } catch (error) {
         reject(error);
       }
@@ -25,16 +25,16 @@ export async function createEVMWallet(mnemonic, index) {
   return await new Promise((resolve, reject) => {
     setTimeout(() => {
       try {
-        let seed = mnemonicToSeedSync(mnemonic).toString("hex");
-        const seedBuffer = Buffer.from(seed, "hex");
+        let seed = mnemonicToSeedSync(mnemonic).toString('hex');
+        const seedBuffer = Buffer.from(seed, 'hex');
         const masterSeed = _ethHdkey.fromMasterSeed(seedBuffer);
         const hardenedKey = masterSeed.derivePath("m/44'/60'/0'/0");
 
         const derivedChild = hardenedKey.deriveChild(index);
         const wallet = derivedChild.getWallet();
         const address = wallet.getChecksumAddressString();
-        const privateKey = wallet.getPrivateKey().toString("hex");
-        resolve({ address, privateKey, mnemonic });
+        const privateKey = wallet.getPrivateKey().toString('hex');
+        resolve({address, privateKey});
       } catch (error) {
         reject(error);
       }
@@ -46,20 +46,20 @@ export async function createTrxWallet(mnemonic, index) {
   return await new Promise((resolve, reject) => {
     setTimeout(() => {
       try {
-        let seed = mnemonicToSeedSync(mnemonic).toString("hex");
-        const seedBuffer = Buffer.from(seed, "hex");
+        let seed = mnemonicToSeedSync(mnemonic).toString('hex');
+        const seedBuffer = Buffer.from(seed, 'hex');
         const masterSeed = hdkey.fromMasterSeed(seedBuffer);
 
         const child = masterSeed.derive("m/44'/195'/0'/0/" + index);
-        const privateKey = child.privateKey.toString("hex");
+        const privateKey = child.privateKey.toString('hex');
 
         const tronWeb = new TronWeb({
-          fullHost: "https://api.trongrid.io",
+          fullHost: 'https://api.trongrid.io',
           privateKey: privateKey,
         });
 
         const address = tronWeb.defaultAddress.base58;
-        resolve({ address, privateKey, mnemonic });
+        resolve({address, privateKey});
       } catch (error) {
         reject(error);
       }
@@ -71,17 +71,17 @@ export async function createSolWallet(mnemonic, index) {
   return await new Promise((resolve, reject) => {
     setTimeout(() => {
       try {
-        let seed = mnemonicToSeedSync(mnemonic).toString("hex");
+        let seed = mnemonicToSeedSync(mnemonic).toString('hex');
         const userSeed = crypto
-          .createHash("sha256")
+          .createHash('sha256')
           .update(seed)
           .update(index.toString())
           .digest();
 
         let keypair = solanaWeb3.Keypair.fromSeed(userSeed.slice(0, 32));
         const address = keypair.publicKey.toString();
-        const privateKey = Buffer.from(keypair.secretKey).toString("hex");
-        resolve({ address, privateKey, mnemonic });
+        const privateKey = Buffer.from(keypair.secretKey).toString('hex');
+        resolve({address, privateKey});
       } catch (error) {
         reject(error);
       }
@@ -94,7 +94,7 @@ export async function createBtcWallet(mnemonic, index) {
     setTimeout(() => {
       try {
         const network = bitcoin.networks.bitcoin;
-        const masterSeed = mnemonicToSeedSync(mnemonic, "");
+        const masterSeed = mnemonicToSeedSync(mnemonic, '');
 
         const rootKey = hdkey.fromMasterSeed(masterSeed);
 
@@ -104,8 +104,8 @@ export async function createBtcWallet(mnemonic, index) {
           pubkey: node.publicKey,
           network: network,
         });
-        const privateKeyHex = node.privateKey.toString("hex");
-        resolve({ address: btc.address, privateKey: privateKeyHex, mnemonic });
+        const privateKeyHex = node.privateKey.toString('hex');
+        resolve({address: btc.address, privateKey: privateKeyHex});
       } catch (error) {
         reject(error);
       }
@@ -118,7 +118,7 @@ export async function importEVMAccount(privateKey) {
     setTimeout(() => {
       try {
         const wallet = new Wallet(privateKey);
-        resolve({ address: wallet?.address });
+        resolve({address: wallet?.address});
       } catch (error) {
         reject(error);
       }
@@ -131,12 +131,12 @@ export async function importTrxAccount(privateKey) {
     setTimeout(() => {
       try {
         const tronWeb = new TronWeb({
-          fullHost: "https://api.trongrid.io",
+          fullHost: 'https://api.trongrid.io',
           privateKey: privateKey,
         });
 
         const address = tronWeb.defaultAddress.base58;
-        resolve({ address });
+        resolve({address});
       } catch (error) {
         reject(error);
       }
@@ -149,11 +149,11 @@ export async function importSolAccount(privateKey) {
     setTimeout(() => {
       try {
         const privateKeyBuffer = Uint8Array.from(
-          Buffer.from(privateKey, "hex")
+          Buffer.from(privateKey, 'hex'),
         );
         const keypair = solanaWeb3.Keypair.fromSecretKey(privateKeyBuffer);
         const address = keypair.publicKey.toString();
-        resolve({ address });
+        resolve({address});
       } catch (error) {
         reject(error);
       }
@@ -167,18 +167,36 @@ export async function importBtcAccount(privateKey) {
       try {
         const network = bitcoin.networks.bitcoin;
         const privateKeyHex = privateKey;
-        const privateKeyBuffer = Buffer.from(privateKeyHex, "hex");
+        const privateKeyBuffer = Buffer.from(privateKeyHex, 'hex');
         const keyPair = bitcoin.ECPair.fromPrivateKey(privateKeyBuffer, {
           network,
         });
-        const { address } = bitcoin.payments.p2pkh({
+        const {address} = bitcoin.payments.p2pkh({
           pubkey: keyPair.publicKey,
           network,
         });
-        resolve({ address });
+        resolve({address});
       } catch (error) {
         reject(error);
       }
     }, 200);
+  });
+}
+
+export async function getBalance(address, rpcUrl) {
+  return await new Promise((resolve, reject) => {
+    try {
+      const provider = new ethers.JsonRpcProvider(rpcUrl);
+      provider
+        .getBalance(address)
+        .then(balance => {
+          resolve(balance);
+        })
+        .catch(error => {
+          reject(error);
+        });
+    } catch (error) {
+      reject(error);
+    }
   });
 }

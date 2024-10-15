@@ -1,26 +1,26 @@
-import { DefaultTheme } from "@react-navigation/native";
-import { Dimensions, PixelRatio } from "react-native";
+import {DefaultTheme} from '@react-navigation/native';
+import {Dimensions, PixelRatio} from 'react-native';
 
-const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get("window");
+const {width: SCREEN_WIDTH, height: SCREEN_HEIGHT} = Dimensions.get('window');
 // 430x932 is scale of iPhone 15 Pro Max.
 const widthBaseScale = SCREEN_WIDTH / 430;
 const heightBaseScale = SCREEN_HEIGHT / 932;
 
 // For responsive UI design. https://medium.com/nerd-for-tech/react-native-styles-normalization-e8ce77a3110c
-const normalize = (size: number, based: "width" | "height" = "width") => {
+const normalize = (size: number, based: 'width' | 'height' = 'width') => {
   const newSize =
-    based === "height" ? size * heightBaseScale : size * widthBaseScale;
+    based === 'height' ? size * heightBaseScale : size * widthBaseScale;
   return Math.round(PixelRatio.roundToNearestPixel(newSize));
 };
 
 // For width pixel.
 const widthPixel = (size: number) => {
-  return normalize(size, "width");
+  return normalize(size, 'width');
 };
 
 // For height pixel.
 const heightPixel = (size: number) => {
-  return normalize(size, "height");
+  return normalize(size, 'height');
 };
 
 // For font pixel.
@@ -39,7 +39,12 @@ const pixelSizeHorizontal = (size: number) => {
 };
 
 export {
-  fontPixel, heightPixel, normalize, pixelSizeHorizontal, pixelSizeVertical, widthPixel
+  fontPixel,
+  heightPixel,
+  normalize,
+  pixelSizeHorizontal,
+  pixelSizeVertical,
+  widthPixel,
 };
 
 const commonColors = {
@@ -54,8 +59,8 @@ const commonColors = {
   purple: 'rgb(160, 32, 240)',
   gray: 'rgb(128,128,128)',
   transparent: 'transparent',
-  appIcon: '#007AFF'
-}
+  appIcon: '#007AFF',
+};
 
 // colors
 export const colors = {
@@ -64,23 +69,24 @@ export const colors = {
     colors: {
       ...DefaultTheme.colors,
       ...commonColors,
-      primary: "rgb(255, 255, 255)",
-      background: "rgb(255, 255, 255)",
-      text: "rgb(0, 0, 0)",
-      tabIconColor: "rgba(0,0,0,0.5)",
-      tabIconColorFocused: "rgb(0,0,0)",
-      statusbar: "rgb(255, 255, 255)",
-      borderColor: "rgb(0, 0, 0)",
+      primary: 'rgb(255, 255, 255)',
+      background: 'rgb(255, 255, 255)',
+      text: 'rgb(0, 0, 0)',
+      icon: 'rgb(0, 0, 0)',
+      tabIconColor: 'rgba(0,0,0,0.5)',
+      tabIconColorFocused: 'rgb(0,0,0)',
+      statusbar: 'rgb(255, 255, 255)',
+      borderColor: 'rgb(0, 0, 0)',
       header: {
         color: '#000',
-        borderBottomColor: '#000'
+        borderBottomColor: '#000',
       },
       dynamicCounter: {
         borderColor: '#000',
         color: '#000',
         textColor: '#fff',
         backgroundColor: '#000',
-        counterContainerColor: '#fff'
+        counterContainerColor: '#fff',
       },
       radioButton: {
         textColor: '#000',
@@ -94,7 +100,7 @@ export const colors = {
         overlay: 'rgba(0,0,0,0.4)',
         selectedItemBorderColor: 'rgba(0,0,0,0.4)',
         accountPicBorderColor: 'rgba(0,0,0,0.4)',
-      }
+      },
     },
   },
   dark: {
@@ -102,13 +108,14 @@ export const colors = {
     colors: {
       ...DefaultTheme.colors,
       ...commonColors,
-      primary: "rgb(0, 0, 0)",
-      background: "rgb(0, 0, 0)",
-      text: "rgb(255,255,255)",
-      tabIconColor: "rgba(255,255,255,0.5)",
-      tabIconColorFocused: "rgb(255,255,255)",
-      statusbar: "rgb(0, 0, 0)",
-      borderColor: "rgb(255, 255, 255)",
+      primary: 'rgb(0, 0, 0)',
+      background: 'rgb(0, 0, 0)',
+      text: 'rgb(255,255,255)',
+      icon: 'rgb(255,255,255)',
+      tabIconColor: 'rgba(255,255,255,0.5)',
+      tabIconColorFocused: 'rgb(255,255,255)',
+      statusbar: 'rgb(0, 0, 0)',
+      borderColor: 'rgb(255, 255, 255)',
       header: {
         color: '#fff',
         borderBottomColor: '#fff',
@@ -132,7 +139,7 @@ export const colors = {
         overlay: 'rgba(225,225,225,0.3)',
         selectedItemBorderColor: 'rgba(255,255,255,0.4)',
         accountPicBorderColor: 'rgba(255,255,255,0.4)',
-      }
+      },
     },
   },
 };
@@ -205,7 +212,7 @@ const fontStyles = {
     fontWeight: fontWeights.regular,
     fontFamily: fonts.spaceMonoRegular,
   },
-}
+};
 
 export const typography = {
   fontWeights,

@@ -1,5 +1,4 @@
 import {Ionicons} from '@expo/vector-icons';
-import {useBottomTabBarHeight} from '@react-navigation/bottom-tabs';
 import {useIsFocused, useTheme} from '@react-navigation/native';
 import React, {useCallback, useEffect, useRef, useState} from 'react';
 import {
@@ -19,7 +18,12 @@ import {useDispatch, useSelector} from 'react-redux';
 import {icon} from '../../assets/images';
 import {Spacing} from '../../components';
 import BottomSheet from '../../components/BottomSheet';
-import {createWallet} from '../../redux/slice/walletSlice';
+import {accountType, networkList, networks} from '../../constants';
+import {
+  createWallet,
+  setCurrentAccount,
+  setCurrentNetwork,
+} from '../../redux/slice/walletSlice';
 import {
   fontPixel,
   normalize,
@@ -35,26 +39,38 @@ import {
   createSolWallet,
   createTrxWallet,
   createWalletMnemonic,
+  getBalance,
 } from '../../web3/web3-wallet';
 
 const Wallet = () => {
   const {colors} = useTheme();
   const styles = createStyle(colors);
   const focused = useIsFocused();
-  const [wallets, setWallets] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [balance, setBalance] = useState(0.0);
   const wallet = useSelector(state => state?.wallet);
   const dispatch = useDispatch();
-  const bottomSheetRefProps = useRef(null);
-  const bottomTabBarHeight = useBottomTabBarHeight();
+  const accountBottomSheetRef = useRef(null);
+  const networkBottomSheetRef = useRef(null);
 
   useEffect(() => {
     if (wallet?.ethAccounts?.length === 0) {
       createWallets();
-    } else {
-      setWallets(wallet?.ethAccounts);
     }
-  }, [focused]);
+
+    if (
+      wallet?.currentAccount?.address &&
+      wallet?.currentAccount?.accountType === accountType.ETH
+    ) {
+      getBalance(wallet?.currentAccount?.address, networks.ETH.rpcUrl)
+        .then(res => {
+          setBalance(res);
+        })
+        .catch(error => {
+          console.error(error);
+        });
+    }
+  }, [focused, wallet]);
 
   const createWallets = async () => {
     if (focused) {
@@ -64,83 +80,145 @@ const Wallet = () => {
       const trxWallet = await createTrxWallet(wallet?.mnemonic, 0);
       const solWallet = await createSolWallet(wallet?.mnemonic, 0);
       const btcWallet = await createBtcWallet(wallet?.mnemonic, 0);
-      setWallets([evmWallet]);
       dispatch(
         createWallet({
-          ethAccount: {...(evmWallet || {}), default: true},
-          solAccount: {...(trxWallet || {}), default: true},
-          btcAccount: {...(solWallet || {}), default: true},
-          tronAccount: {...(btcWallet || {}), default: true},
+          ethAccount: {
+            ...(evmWallet || {}),
+            accountName: 'Account - 1',
+            accountType: accountType.ETH,
+            default: true,
+          },
+          solAccount: {
+            ...(trxWallet || {}),
+            accountName: 'Account - 1',
+            accountType: accountType.SOLANA,
+            default: true,
+          },
+          btcAccount: {
+            ...(solWallet || {}),
+            accountName: 'Account - 1',
+            accountType: accountType.BTC,
+            default: true,
+          },
+          tronAccount: {
+            ...(btcWallet || {}),
+            accountName: 'Account - 1',
+            accountType: accountType.TRON,
+            default: true,
+          },
         }),
       );
       setLoading(false);
     }
   };
 
-  const onPress = useCallback(() => {
-    const isActive = bottomSheetRefProps?.current?.isActive();
+  const onPressProfile = useCallback(() => {
+    const isActive = accountBottomSheetRef?.current?.isActive();
     if (isActive) {
-      bottomSheetRefProps?.current?.scrollTo(0);
+      accountBottomSheetRef?.current?.hide();
     } else {
-      bottomSheetRefProps?.current?.scrollTo(-500);
+      accountBottomSheetRef?.current?.show();
     }
-  }, []);
+  });
 
-  const onPressEthAccount = (item, index) => {
-    console.log(index, ' - ', item);
+  const onPressNetworkIcon = useCallback(() => {
+    const isActive = networkBottomSheetRef?.current?.isActive();
+    if (isActive) {
+      networkBottomSheetRef?.current?.hide();
+    } else {
+      networkBottomSheetRef?.current?.show();
+    }
+  });
+
+  const onPressAccount = item => {
+    dispatch(setCurrentAccount(item));
   };
-  const onPressSolanaAccount = (item, index) => {
-    console.log(index, ' - ', item);
+
+  const onPressNetwork = item => {
+    dispatch(setCurrentNetwork(item));
+    networkBottomSheetRef?.current?.scrollTo(0);
   };
-  const onPressBtcAccount = (item, index) => {
-    console.log(index, ' - ', item);
-  };
-  const onPressTronAccount = (item, index) => {
-    console.log(index, ' - ', item);
-  };
+
+  const onPressAddress = () => {};
 
   return (
     <GestureHandlerRootView>
       <SafeAreaView style={styles.container} edges={['top', 'bottom']}>
         <View style={styles.wrapper}>
           <Header
-            walletProfilePic={loading ? undefined : wallets?.[0]?.address}
-            onPressProfilePic={() => {
-              onPress();
-            }}
+            networkImage={wallet?.currentNetwork?.networkImage}
+            onPressNetworkIcon={onPressNetworkIcon}
           />
+          <ScrollView
+            contentContainerStyle={{alignItems: 'flex-start'}}
+            style={{
+              paddingHorizontal: sizes.paddingHorizontal,
+              paddingVertical: sizes.paddingVertical,
+            }}>
+            <View style={styles.accountInfoContainer}>
+              <Pressable
+                style={styles.accountPicContainer}
+                onPress={onPressProfile}>
+                <Image
+                  source={
+                    wallet?.currentAccount?.address
+                      ? {uri: toDataUrl(wallet?.currentAccount?.address)}
+                      : icon
+                  }
+                  style={{
+                    width: normalize(50),
+                    height: normalize(50),
+                    borderRadius: 100,
+                  }}
+                />
+              </Pressable>
+              <Spacing direction="x" size={20} />
+              <View style={{flex: 1}}>
+                <Text style={styles.accountName}>
+                  {wallet?.currentAccount?.accountName}
+                </Text>
+                <Text
+                  numberOfLines={1}
+                  ellipsizeMode="middle"
+                  style={styles.accountAddress}
+                  onPress={onPressAddress}>
+                  {wallet?.currentAccount?.address}
+                </Text>
+              </View>
+            </View>
+          </ScrollView>
         </View>
       </SafeAreaView>
-      <BottomSheet ref={bottomSheetRefProps} isBottomTab={true}>
+      {/* Profile Bottom Sheet */}
+      <BottomSheet ref={accountBottomSheetRef} isBottomTab={true}>
         <ScrollView
-          contentContainerStyle={{
-            paddingBottom: bottomTabBarHeight + normalize(50),
-          }}
-          showsVerticalScrollIndicator={false}>
-          <Profiles
+          showsVerticalScrollIndicator={false}
+          contentContainerStyle={{flexGrow: 1}}>
+          <AccountItem
             key={'Eth Accounts'}
-            title={'Eth Accounts'}
-            data={wallet?.ethAccounts || []}
-            onPress={onPressEthAccount}
-            selectedWallet={wallet?.selectedWallet}
+            data={wallet?.wallets || []}
+            onPress={onPressAccount}
+            currentAccount={wallet?.currentAccount}
           />
-          <Profiles
-            key={'Solana Accounts'}
-            title={'Solana Accounts'}
-            data={wallet?.solAccounts || []}
-            onPress={onPressSolanaAccount}
-          />
-          <Profiles
-            key={'Btc Accounts'}
-            title={'Btc Accounts'}
-            data={wallet?.btcAccounts || []}
-            onPress={onPressBtcAccount}
-          />
-          <Profiles
-            key={'Tron Accounts'}
-            title={'Tron Accounts'}
-            data={wallet?.tronAccounts || []}
-            onPress={onPressTronAccount}
+        </ScrollView>
+        <Text
+          style={{
+            ...typography.fontStyles.nunitoSemiBold,
+            alignSelf: 'center',
+            color: tColors.dark.colors.appIcon,
+            fontSize: fontPixel(18),
+          }}>
+          Add new account
+        </Text>
+        <Spacing size={30} />
+      </BottomSheet>
+      <BottomSheet ref={networkBottomSheetRef} isBottomTab={true}>
+        <ScrollView showsVerticalScrollIndicator={false}>
+          <NetworkItem
+            key={wallet?.currentNetwork?.networkImage}
+            data={networkList || []}
+            onPress={onPressNetwork}
+            currentNetwork={wallet?.currentNetwork}
           />
         </ScrollView>
       </BottomSheet>
@@ -151,20 +229,18 @@ const Wallet = () => {
 export default Wallet;
 
 const Header = ({
-  walletProfilePic = undefined,
-  onPressProfilePic = () => {},
+  networkImage = undefined,
+  onPressNetworkIcon = () => {},
   onPressSetting = () => {},
 }) => {
   const {colors} = useTheme();
   const styles = createStyle(colors);
   return (
     <View style={styles.headerContainer}>
-      <Icon onPress={onPressProfilePic}>
+      <Icon onPress={onPressNetworkIcon}>
         <View style={styles.profilePicContainer}>
           <Image
-            source={
-              walletProfilePic ? {uri: toDataUrl(walletProfilePic)} : icon
-            }
+            source={networkImage}
             style={styles.profilePic}
             contentFit="contain"
           />
@@ -192,18 +268,18 @@ const Icon = ({children, onPress = () => {}}) => {
   );
 };
 
-const Profiles = ({data, title, onPress, selectedWallet = {}}) => {
+const AccountItem = ({data, title, onPress, currentAccount = {}}) => {
   const {colors} = useTheme();
   const styles = createStyle(colors);
   return (
     <View style={styles.profileContainer} key={title}>
-      <Text style={styles.profileContainerTitle}>{title}</Text>
-      <Spacing size={10} />
+      {title ? <Text style={styles.profileContainerTitle}>{title}</Text> : null}
+      {title ? <Spacing size={10} /> : null}
       {data.map((item, index) => (
         <Pressable
           key={`${title}-${index}`}
           style={[
-            selectedWallet?.address?.toLowerCase() ===
+            currentAccount?.address?.toLowerCase() ===
             item?.address?.toLowerCase()
               ? styles.currentAccount
               : styles.account,
@@ -245,6 +321,53 @@ const Profiles = ({data, title, onPress, selectedWallet = {}}) => {
   );
 };
 
+const NetworkItem = ({data, title, onPress, currentNetwork = {}}) => {
+  const {colors} = useTheme();
+  const styles = createStyle(colors);
+  return (
+    <View style={styles.profileContainer} key={title}>
+      {data.map((item, index) => (
+        <Pressable
+          key={`${title}-${index}`}
+          style={[
+            currentNetwork?.networkName === item?.networkName
+              ? styles.currentNetwork
+              : styles.network,
+          ]}
+          onPress={() => onPress(item, index)}>
+          <View style={styles.networkIconContainer}>
+            <Image source={item?.networkImage} style={styles.networkIcon} />
+          </View>
+          <Spacing direction="X" size={normalize(20)} />
+          <View style={{flex: 1}}>
+            <Text
+              numberOfLines={1}
+              ellipsizeMode="middle"
+              style={{
+                ...typography.fontStyles.nunitoSemiBold,
+                color: colors.text,
+                fontSize: fontPixel(20),
+              }}>
+              {item?.networkName}
+            </Text>
+            <Text
+              numberOfLines={1}
+              ellipsizeMode="middle"
+              style={{
+                ...typography.fontStyles.nunitoSemiBold,
+                color: tColors.dark.colors.gray,
+                fontSize: fontPixel(16),
+              }}>
+              {item?.currencySymbol}
+            </Text>
+          </View>
+          <Spacing direction="X" size={normalize(20)} />
+        </Pressable>
+      ))}
+    </View>
+  );
+};
+
 const createStyle = colors =>
   StyleSheet.create({
     container: {
@@ -254,10 +377,9 @@ const createStyle = colors =>
     wrapper: {
       flex: 1,
       backgroundColor: colors.background,
-      paddingHorizontal: sizes.paddingHorizontal,
     },
     headerContainer: {
-      position: 'absolute',
+      // position: 'absolute',
       width: Device.getDeviceWidth(),
       height: normalize(60),
       flexDirection: 'row',
@@ -308,6 +430,8 @@ const createStyle = colors =>
       marginVertical: normalize(5),
       paddingVertical: normalize(12),
       alignItems: 'center',
+      borderWidth: 2,
+      borderColor: 'transparent',
     },
     currentAccount: {
       flexDirection: 'row',
@@ -329,5 +453,45 @@ const createStyle = colors =>
       width: normalize(42),
       height: normalize(42),
       borderRadius: 100,
+    },
+    networkIconContainer: {
+      borderRadius: 100,
+      borderWidth: normalize(2),
+      padding: normalize(2),
+      borderColor: colors.bottomSheet.accountPicBorderColor,
+    },
+    networkIcon: {
+      width: normalize(42),
+      height: normalize(42),
+      borderRadius: 100,
+    },
+    network: {
+      flexDirection: 'row',
+      paddingHorizontal: sizes.paddingHorizontal,
+      marginVertical: normalize(5),
+      paddingVertical: normalize(12),
+      alignItems: 'center',
+      borderWidth: 2,
+      borderColor: 'transparent',
+    },
+    currentNetwork: {
+      flexDirection: 'row',
+      paddingHorizontal: sizes.paddingHorizontal,
+      marginVertical: normalize(5),
+      paddingVertical: normalize(12),
+      alignItems: 'center',
+      borderColor: colors.bottomSheet.selectedItemBorderColor,
+      borderWidth: 2,
+      borderRadius: 12,
+    },
+    accountInfoContainer: {
+      flex: 1,
+      flexDirection: 'row',
+      alignItems: 'center',
+    },
+    accountName: {...typography.fontStyles.nunitoBold, fontSize: fontPixel(20)},
+    accountAddress: {
+      ...typography.fontStyles.nunitoSemiBold,
+      fontSize: fontPixel(15),
     },
   });

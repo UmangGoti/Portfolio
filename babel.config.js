@@ -1,15 +1,16 @@
 module.exports = function (api) {
   api.cache(true);
   return {
-    presets: ["babel-preset-expo"],
+    presets: ['babel-preset-expo'],
     plugins: [
+      ['module:react-native-dotenv'],
       [
-        "module-resolver",
+        'module-resolver',
         {
           alias: {
-            crypto: "react-native-quick-crypto",
-            stream: "readable-stream",
-            buffer: "@craftzdog/react-native-buffer",
+            crypto: 'react-native-quick-crypto',
+            stream: 'readable-stream',
+            buffer: '@craftzdog/react-native-buffer',
           },
         },
       ],
