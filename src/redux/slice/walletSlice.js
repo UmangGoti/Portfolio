@@ -1,5 +1,12 @@
 import {createSlice} from '@reduxjs/toolkit';
-import {networkList, networks} from '../../constants';
+import {accountType, networks} from '../../constants';
+
+const accountTypeMapping = {
+  [accountType.ETH]: 'ethAccounts',
+  [accountType.SOLANA]: 'solAccounts',
+  [accountType.BTC]: 'btcAccounts',
+  [accountType.TRON]: 'tronAccounts',
+};
 
 const walletSlice = createSlice({
   name: 'wallet',
@@ -10,7 +17,7 @@ const walletSlice = createSlice({
     tronAccounts: [],
     currentAccount: {}, // current selected wallet
     wallets: [], // current wallet list
-    currentNetwork: {},
+    currentNetwork: {}, // current selected network.
   },
   reducers: {
     createWallet: (state, action) => {
@@ -30,9 +37,30 @@ const walletSlice = createSlice({
     setCurrentNetwork: (state, action) => {
       state.currentNetwork = action.payload;
     },
+    setWallets: (state, action) => {
+      const selectedAccountType = action.payload;
+      const accountListKey = accountTypeMapping[selectedAccountType];
+      if (accountListKey) {
+        state.wallets = state[accountListKey];
+        state.currentAccount = state[accountListKey][0];
+      }
+    },
+    addNewAccount: (state, action) => {
+      const account = action.payload;
+      const accountListKey = accountTypeMapping[account?.accountType];
+      if (accountListKey) {
+        state[accountListKey] = [...state[accountListKey], {...account}];
+        state.wallets = [...state[accountListKey]]; // To update current wallet list too.
+      }
+    },
   },
 });
 
-export const {createWallet, setCurrentAccount, setCurrentNetwork} =
-  walletSlice.actions;
+export const {
+  createWallet,
+  setCurrentAccount,
+  setCurrentNetwork,
+  setWallets,
+  addNewAccount,
+} = walletSlice.actions;
 export default walletSlice.reducer;

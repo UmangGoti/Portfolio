@@ -11,9 +11,9 @@ import Animated, {
   withTiming,
 } from 'react-native-reanimated';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
-import {Spacing} from '../components';
 import {normalize} from '../theme';
 import {sleep} from '../utils/helper';
+import Spacing from './Spacing';
 
 const {height: SCREEN_HEIGHT} = Dimensions.get('window');
 

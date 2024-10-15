@@ -1,8 +1,10 @@
-import {Ionicons} from '@expo/vector-icons';
+import {AntDesign, Ionicons, MaterialIcons} from '@expo/vector-icons';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import {useIsFocused, useTheme} from '@react-navigation/native';
 import React, {useCallback, useEffect, useRef, useState} from 'react';
 import {
   Image,
+  Linking,
   Pressable,
   ScrollView,
   StyleSheet,
@@ -16,13 +18,15 @@ import {
 import {SafeAreaView} from 'react-native-safe-area-context';
 import {useDispatch, useSelector} from 'react-redux';
 import {icon} from '../../assets/images';
-import {Spacing} from '../../components';
-import BottomSheet from '../../components/BottomSheet';
+import {BottomSheet, Loader, QrCodeModal, Spacing} from '../../components';
 import {accountType, networkList, networks} from '../../constants';
+import {STORAGE} from '../../constants/storage';
 import {
+  addNewAccount,
   createWallet,
   setCurrentAccount,
   setCurrentNetwork,
+  setWallets,
 } from '../../redux/slice/walletSlice';
 import {
   fontPixel,
@@ -47,70 +51,89 @@ const Wallet = () => {
   const styles = createStyle(colors);
   const focused = useIsFocused();
   const [loading, setLoading] = useState(false);
-  const [balance, setBalance] = useState(0.0);
+  const [balance, setBalance] = useState({balance: 0.0, currency: ''});
   const wallet = useSelector(state => state?.wallet);
   const dispatch = useDispatch();
   const accountBottomSheetRef = useRef(null);
   const networkBottomSheetRef = useRef(null);
+  const qrCodeModalRef = useRef(null);
 
   useEffect(() => {
     if (wallet?.ethAccounts?.length === 0) {
       createWallets();
     }
 
-    if (
-      wallet?.currentAccount?.address &&
-      wallet?.currentAccount?.accountType === accountType.ETH
-    ) {
-      getBalance(wallet?.currentAccount?.address, networks.ETH.rpcUrl)
-        .then(res => {
-          setBalance(res);
-        })
-        .catch(error => {
-          console.error(error);
+    getBalance(
+      wallet?.currentAccount?.address,
+      networks[wallet?.currentAccount?.accountType]?.rpcUrl,
+      wallet?.currentAccount?.accountType,
+    )
+      .then(res => {
+        setBalance({
+          balance: res,
+          currency: wallet?.currentNetwork?.currencySymbol,
         });
-    }
+      })
+      .catch(error => {
+        console.error(error);
+      });
   }, [focused, wallet]);
 
   const createWallets = async () => {
     if (focused) {
       setLoading(true);
-      const wallet = await createWalletMnemonic();
-      const evmWallet = await createEVMWallet(wallet?.mnemonic, 0);
-      const trxWallet = await createTrxWallet(wallet?.mnemonic, 0);
-      const solWallet = await createSolWallet(wallet?.mnemonic, 0);
-      const btcWallet = await createBtcWallet(wallet?.mnemonic, 0);
-      dispatch(
-        createWallet({
-          ethAccount: {
-            ...(evmWallet || {}),
-            accountName: 'Account - 1',
-            accountType: accountType.ETH,
-            default: true,
-          },
-          solAccount: {
-            ...(trxWallet || {}),
-            accountName: 'Account - 1',
-            accountType: accountType.SOLANA,
-            default: true,
-          },
-          btcAccount: {
-            ...(solWallet || {}),
-            accountName: 'Account - 1',
-            accountType: accountType.BTC,
-            default: true,
-          },
-          tronAccount: {
-            ...(btcWallet || {}),
-            accountName: 'Account - 1',
-            accountType: accountType.TRON,
-            default: true,
-          },
-        }),
-      );
-      setLoading(false);
+      try {
+        // Create mnemonic and store it
+        const wallet = await createWalletMnemonic();
+        await AsyncStorage.setItem(STORAGE.MNEMONIC, wallet?.mnemonic);
+
+        // Parallel wallet creation for different account types
+        const [evmWallet, trxWallet, solWallet, btcWallet] = await Promise.all([
+          createEVMWallet(wallet?.mnemonic, 0),
+          createTrxWallet(wallet?.mnemonic, 0),
+          createSolWallet(wallet?.mnemonic, 0),
+          createBtcWallet(wallet?.mnemonic, 0),
+        ]);
+
+        // Dispatch wallet creation
+        dispatch(
+          createWallet({
+            ethAccount: createAccount(
+              evmWallet,
+              'Account - 1',
+              accountType.ETH,
+            ),
+            solAccount: createAccount(
+              solWallet,
+              'Account - 1',
+              accountType.SOLANA,
+            ),
+            btcAccount: createAccount(
+              btcWallet,
+              'Account - 1',
+              accountType.BTC,
+            ),
+            tronAccount: createAccount(
+              trxWallet,
+              'Account - 1',
+              accountType.TRON,
+            ),
+          }),
+        );
+      } catch (error) {
+        console.error('Error creating wallets:', error);
+      } finally {
+        setLoading(false);
+      }
     }
   };
+
+  const createAccount = (wallet, accountName, accountType) => ({
+    ...(wallet || {}),
+    accountName,
+    accountType,
+    default: true,
+  });
 
   const onPressProfile = useCallback(() => {
     const isActive = accountBottomSheetRef?.current?.isActive();
@@ -135,11 +158,74 @@ const Wallet = () => {
   };
 
   const onPressNetwork = item => {
-    dispatch(setCurrentNetwork(item));
-    networkBottomSheetRef?.current?.scrollTo(0);
+    const {accountType: selectedAccountType} = item;
+
+    if (
+      selectedAccountType === accountType.ETH &&
+      wallet?.currentAccount?.accountType !== accountType.ETH
+    ) {
+      dispatch(setWallets(selectedAccountType));
+    }
+
+    if (
+      selectedAccountType === accountType.ETH ||
+      selectedAccountType === accountType.SOLANA ||
+      selectedAccountType === accountType.BTC ||
+      selectedAccountType === accountType.TRON
+    ) {
+      dispatch(setWallets(selectedAccountType));
+      dispatch(setCurrentNetwork(item));
+    }
+
+    // Hide the bottom sheet
+    networkBottomSheetRef?.current?.hide(0);
   };
 
-  const onPressAddress = () => {};
+  const onPressAddress = async () => {
+    await Clipboard.setStringAsync(wallet?.currentAccount?.address);
+  };
+
+  const onPressAddNewAccount = async () => {
+    const mnemonic = await AsyncStorage.getItem(STORAGE.MNEMONIC);
+    const currentAccountType = wallet?.currentAccount?.accountType;
+    let account = {};
+    let length;
+    let createWallet;
+
+    switch (currentAccountType) {
+      case accountType.ETH:
+        length = wallet?.ethAccounts?.length + 1;
+        createWallet = createEVMWallet;
+        break;
+      case accountType.SOLANA:
+        length = wallet?.solAccounts?.length + 1;
+        createWallet = createSolWallet;
+        break;
+      case accountType.BTC:
+        length = wallet?.btcAccounts?.length + 1;
+        createWallet = createBtcWallet;
+        break;
+      case accountType.TRON:
+        length = wallet?.tronAccounts?.length + 1;
+        createWallet = createTrxWallet;
+        break;
+      default:
+        console.error('Unsupported account type');
+        return;
+    }
+
+    try {
+      const res = await createWallet(mnemonic, length);
+      account = {
+        ...res,
+        accountName: `Account - ${length}`,
+        accountType: currentAccountType,
+      };
+      dispatch(addNewAccount(account));
+    } catch (error) {
+      console.error(`create${currentAccountType}Wallet`, error);
+    }
+  };
 
   return (
     <GestureHandlerRootView>
@@ -165,11 +251,7 @@ const Wallet = () => {
                       ? {uri: toDataUrl(wallet?.currentAccount?.address)}
                       : icon
                   }
-                  style={{
-                    width: normalize(50),
-                    height: normalize(50),
-                    borderRadius: 100,
-                  }}
+                  style={styles.accountPic}
                 />
               </Pressable>
               <Spacing direction="x" size={20} />
@@ -186,32 +268,79 @@ const Wallet = () => {
                 </Text>
               </View>
             </View>
+            <Spacing size={25} />
+            <Text style={styles.balance}>
+              {balance?.balance} {balance?.currency}
+            </Text>
+            <Spacing size={18} />
+            <View
+              style={{
+                width: '100%',
+                flexDirection: 'row',
+                justifyContent: 'center',
+                gap: normalize(20),
+              }}>
+              <ActionButton>
+                <MaterialIcons
+                  name="call-made"
+                  size={24}
+                  color={tColors.dark.colors.appIcon}
+                />
+              </ActionButton>
+              <ActionButton>
+                <MaterialIcons
+                  name="call-received"
+                  size={24}
+                  color={tColors.dark.colors.appIcon}
+                />
+              </ActionButton>
+              <ActionButton
+                onPress={() => {
+                  qrCodeModalRef?.current?.show(
+                    wallet?.currentAccount?.address,
+                  );
+                }}>
+                <Ionicons
+                  name="qr-code-outline"
+                  size={24}
+                  color={tColors.dark.colors.appIcon}
+                />
+              </ActionButton>
+              <ActionButton
+                onPress={() => {
+                  let exploreUrl = networks[
+                    wallet.currentNetwork?.key
+                  ]?.blockExplorerUrl(wallet?.currentAccount?.address);
+                  Linking.openURL(exploreUrl);
+                }}>
+                <AntDesign
+                  name="earth"
+                  size={24}
+                  color={tColors.dark.colors.appIcon}
+                />
+              </ActionButton>
+            </View>
           </ScrollView>
         </View>
       </SafeAreaView>
-      {/* Profile Bottom Sheet */}
+      {/* Profile BottomSheet */}
       <BottomSheet ref={accountBottomSheetRef} isBottomTab={true}>
         <ScrollView
           showsVerticalScrollIndicator={false}
           contentContainerStyle={{flexGrow: 1}}>
           <AccountItem
-            key={'Eth Accounts'}
+            key={'Accounts'}
             data={wallet?.wallets || []}
             onPress={onPressAccount}
             currentAccount={wallet?.currentAccount}
           />
         </ScrollView>
-        <Text
-          style={{
-            ...typography.fontStyles.nunitoSemiBold,
-            alignSelf: 'center',
-            color: tColors.dark.colors.appIcon,
-            fontSize: fontPixel(18),
-          }}>
+        <Text onPress={onPressAddNewAccount} style={styles.addNewAccount}>
           Add new account
         </Text>
         <Spacing size={30} />
       </BottomSheet>
+      {/** Network BottomSheet */}
       <BottomSheet ref={networkBottomSheetRef} isBottomTab={true}>
         <ScrollView showsVerticalScrollIndicator={false}>
           <NetworkItem
@@ -222,6 +351,8 @@ const Wallet = () => {
           />
         </ScrollView>
       </BottomSheet>
+      <Loader visible={loading} />
+      <QrCodeModal ref={qrCodeModalRef} />
     </GestureHandlerRootView>
   );
 };
@@ -301,7 +432,7 @@ const AccountItem = ({data, title, onPress, currentAccount = {}}) => {
                 color: colors.text,
                 fontSize: fontPixel(20),
               }}>
-              {`Account - ${index}`}
+              {item?.accountName}
             </Text>
             <Text
               numberOfLines={1}
@@ -368,6 +499,25 @@ const NetworkItem = ({data, title, onPress, currentNetwork = {}}) => {
   );
 };
 
+const ActionButton = ({children, disabled = false, onPress}) => {
+  return (
+    <Pressable
+      disabled={disabled}
+      onPress={onPress}
+      style={{
+        width: normalize(50),
+        height: normalize(50),
+        borderWidth: 2,
+        borderRadius: 12,
+        justifyContent: 'center',
+        alignItems: 'center',
+        borderColor: tColors.dark.colors.appIcon,
+      }}>
+      {children}
+    </Pressable>
+  );
+};
+
 const createStyle = colors =>
   StyleSheet.create({
     container: {
@@ -379,7 +529,6 @@ const createStyle = colors =>
       backgroundColor: colors.background,
     },
     headerContainer: {
-      // position: 'absolute',
       width: Device.getDeviceWidth(),
       height: normalize(60),
       flexDirection: 'row',
@@ -489,9 +638,26 @@ const createStyle = colors =>
       flexDirection: 'row',
       alignItems: 'center',
     },
-    accountName: {...typography.fontStyles.nunitoBold, fontSize: fontPixel(20)},
+    accountName: {
+      ...typography.fontStyles.nunitoBold,
+      fontSize: fontPixel(20),
+      color: colors.text,
+    },
     accountAddress: {
       ...typography.fontStyles.nunitoSemiBold,
       fontSize: fontPixel(15),
+      color: tColors.dark.colors.gray,
+    },
+    addNewAccount: {
+      ...typography.fontStyles.nunitoSemiBold,
+      alignSelf: 'center',
+      color: tColors.dark.colors.appIcon,
+      fontSize: fontPixel(18),
+    },
+    balance: {
+      ...typography.fontStyles.nunitoExtraBold,
+      alignSelf: 'center',
+      fontSize: fontPixel(30),
+      color: colors.text,
     },
   });

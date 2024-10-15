@@ -1,12 +1,20 @@
 {
   "cSpell.words": [
     "arbitrum",
+    "bitcoinjs",
+    "Blockies",
     "ellipsize",
+    "hdkey",
+    "Ionicons",
+    "keypair",
     "Morpher",
     "nunito",
     "Passcode",
     "Pressable",
-    "solana"
+    "sekah",
+    "solana",
+    "tronweb",
+    "wpkh"
   ],
   "files.autoSave": "off",
   "eslint.validate": ["javascript", "javascriptreact"],
