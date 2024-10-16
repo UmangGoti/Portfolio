@@ -1,5 +1,5 @@
 import {DefaultTheme} from '@react-navigation/native';
-import {ActivityIndicator, Dimensions, PixelRatio} from 'react-native';
+import {Dimensions, PixelRatio} from 'react-native';
 
 const {width: SCREEN_WIDTH, height: SCREEN_HEIGHT} = Dimensions.get('window');
 // 430x932 is scale of iPhone 15 Pro Max.
@@ -105,6 +105,13 @@ export const colors = {
         activityContainer: 'rgba(0,0,0,1)',
         activityIndicator: commonColors.appIcon,
       },
+      qrCode: {
+        dotFillColor: '#fff',
+        cornerRectFillColor: '#fff',
+        invertCornerRectFillColor: '#000',
+        backgroundColor: '#000',
+        address: '#fff',
+      },
     },
   },
   dark: {
@@ -147,6 +154,13 @@ export const colors = {
       loader: {
         activityContainer: '#fff',
         activityIndicator: commonColors.appIcon,
+      },
+      qrCode: {
+        dotFillColor: '#000',
+        cornerRectFillColor: '#000',
+        invertCornerRectFillColor: '#fff',
+        backgroundColor: '#fff',
+        address: '#000',
       },
     },
   },

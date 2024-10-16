@@ -12,7 +12,15 @@ const generateMatrix = (value, errorCorrectionLevel) => {
   }, []);
 };
 
-const QRcode = ({ecl = 'M', size = 150, value = 'QR Code'}) => {
+const QRcode = ({
+  ecl = 'M',
+  size = 150,
+  value = 'QR Code',
+  fillColor = 'white',
+  invertCornerRectFillColor = 'white',
+  dotFillColor = 'black',
+  cornerRectFillColor = 'black',
+}) => {
   const dots = useMemo(() => {
     const dots = [];
     const matrix = generateMatrix(value, ecl);
@@ -30,7 +38,7 @@ const QRcode = ({ecl = 'M', size = 150, value = 'QR Code'}) => {
         dots.push(
           <Rect
             key={`Corner-Rect-${x}-${y}-${i}`}
-            fill={i % 2 !== 0 ? 'white' : 'black'}
+            fill={i % 2 !== 0 ? invertCornerRectFillColor : cornerRectFillColor}
             height={cellSize * (7 - i * 2)}
             rx={(i - 3) * -6 + (i === 0 ? 2 : 0)}
             ry={(i - 3) * -6 + (i === 0 ? 2 : 0)}
@@ -71,7 +79,7 @@ const QRcode = ({ecl = 'M', size = 150, value = 'QR Code'}) => {
                   key={`Circle-${i}-${j}`}
                   cx={j * cellSize + cellSize / 2}
                   cy={i * cellSize + cellSize / 2}
-                  fill="black"
+                  fill={dotFillColor}
                   r={cellSize / 3}
                 />,
               );
@@ -86,7 +94,7 @@ const QRcode = ({ecl = 'M', size = 150, value = 'QR Code'}) => {
 
   return (
     <Svg height={size} width={size}>
-      <Rect fill="white" height={size} width={size} />
+      <Rect fill={fillColor} height={size} width={size} rx={20} ry={20} />
       {dots}
     </Svg>
   );

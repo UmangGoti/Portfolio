@@ -36,6 +36,7 @@ import {
   typography,
 } from '../../theme';
 import Device from '../../utils/device';
+import {copyToClipboard} from '../../utils/helper';
 import {toDataUrl} from '../../web3/Blockies';
 import {
   createBtcWallet,
@@ -181,8 +182,8 @@ const Wallet = () => {
     networkBottomSheetRef?.current?.hide(0);
   };
 
-  const onPressAddress = async () => {
-    await Clipboard.setStringAsync(wallet?.currentAccount?.address);
+  const onPressAddress = () => {
+    copyToClipboard(wallet?.currentAccount?.address);
   };
 
   const onPressAddNewAccount = async () => {
@@ -287,7 +288,12 @@ const Wallet = () => {
                   color={tColors.dark.colors.appIcon}
                 />
               </ActionButton>
-              <ActionButton>
+              <ActionButton
+                onPress={() => {
+                  qrCodeModalRef?.current?.show(
+                    wallet?.currentAccount?.address,
+                  );
+                }}>
                 <MaterialIcons
                   name="call-received"
                   size={24}
