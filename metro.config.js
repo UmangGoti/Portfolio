@@ -1,17 +1,17 @@
 // metro.config.js
-const { getDefaultConfig } = require("expo/metro-config");
-const path = require("path");
+const {getDefaultConfig} = require('expo/metro-config');
+const path = require('path');
 
 const defaultConfig = getDefaultConfig(__dirname);
 
 // Define the extraNodeModules to map Node.js core modules to React Native polyfills
 defaultConfig.resolver.extraNodeModules = {
   // Aliases defined in babel.config.js
-  crypto: path.resolve(__dirname, "node_modules/react-native-quick-crypto"),
+  crypto: path.resolve(__dirname, 'node_modules/react-native-quick-crypto'),
 };
 
 // Include any additional resolver configurations if necessary
-defaultConfig.resolver.sourceExts.push("cjs"); // Include CommonJS modules if required
+defaultConfig.resolver.sourceExts.push('cjs'); // Include CommonJS modules if required
 
 // Optional: Define asset extensions if you use any custom asset types
 // defaultConfig.resolver.assetExts = defaultConfig.resolver.assetExts.filter(ext => ext !== 'svg');

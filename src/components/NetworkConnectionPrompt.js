@@ -99,8 +99,8 @@ const NetworkConnectionPrompt = () => {
         {isConnected === null
           ? 'Checking your network...'
           : isConnected
-          ? 'You are back online.'
-          : 'You are offline, Please check your internet connection.'}
+            ? 'You are back online.'
+            : 'You are offline, Please check your internet connection.'}
       </Text>
     </Animated.View>
   );

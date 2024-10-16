@@ -1,11 +1,11 @@
 (function (global, factory) {
-  exports && typeof exports === "object" && typeof module !== "undefined"
+  exports && typeof exports === 'object' && typeof module !== 'undefined'
     ? factory(exports)
-    : typeof define === "function" && define.amd
-    ? define(["exports"], factory)
-    : factory((global.blockies = {}));
+    : typeof define === 'function' && define.amd
+      ? define(['exports'], factory)
+      : factory((global.blockies = {}));
 })(this, function (exports) {
-  "use strict";
+  'use strict';
 
   /**
    * A handy class to calculate color values.
@@ -29,7 +29,7 @@
       (w >> 24) & 255,
       (w >> 16) & 255,
       (w >> 8) & 255,
-      w & 255
+      w & 255,
     );
   }
 
@@ -62,15 +62,15 @@
     this.iend_size = 4 + 4 + 4;
     this.buffer_size = this.iend_offs + this.iend_size; // total PNG size
 
-    this.buffer = new Array();
+    this.buffer = [];
     this.palette = new Object();
     this.pindex = 0;
 
-    var _crc32 = new Array();
+    var _crc32 = [];
 
     // initialize buffer with zero bytes
     for (var i = 0; i < this.buffer_size; i++) {
-      this.buffer[i] = "\x00";
+      this.buffer[i] = '\x00';
     }
 
     // initialize non-zero elements
@@ -78,15 +78,15 @@
       this.buffer,
       this.ihdr_offs,
       byte4(this.ihdr_size - 12),
-      "IHDR",
+      'IHDR',
       byte4(width),
       byte4(height),
-      "\x08\x03"
+      '\x08\x03',
     );
-    write(this.buffer, this.plte_offs, byte4(this.plte_size - 12), "PLTE");
-    write(this.buffer, this.trns_offs, byte4(this.trns_size - 12), "tRNS");
-    write(this.buffer, this.idat_offs, byte4(this.idat_size - 12), "IDAT");
-    write(this.buffer, this.iend_offs, byte4(this.iend_size - 12), "IEND");
+    write(this.buffer, this.plte_offs, byte4(this.plte_size - 12), 'PLTE');
+    write(this.buffer, this.trns_offs, byte4(this.trns_size - 12), 'tRNS');
+    write(this.buffer, this.idat_offs, byte4(this.idat_size - 12), 'IDAT');
+    write(this.buffer, this.iend_offs, byte4(this.iend_size - 12), 'IEND');
 
     // initialize deflate header
     var header = ((8 + (7 << 4)) << 8) | (3 << 6);
@@ -99,17 +99,17 @@
       var size, bits;
       if (i + 0xffff < this.pix_size) {
         size = 0xffff;
-        bits = "\x00";
+        bits = '\x00';
       } else {
         size = this.pix_size - (i << 16) - i;
-        bits = "\x01";
+        bits = '\x01';
       }
       write(
         this.buffer,
         this.idat_offs + 8 + 2 + (i << 16) + (i << 2),
         bits,
         byte2lsb(size),
-        byte2lsb(~size)
+        byte2lsb(~size),
       );
     }
 
@@ -138,9 +138,9 @@
       alpha = alpha >= 0 ? alpha : 255;
       var color = (((((alpha << 8) | red) << 8) | green) << 8) | blue;
 
-      if (typeof this.palette[color] === "undefined") {
+      if (typeof this.palette[color] === 'undefined') {
         if (this.pindex == this.depth) {
-          return "\x00";
+          return '\x00';
         }
 
         var ndx = this.plte_offs + 8 + 3 * this.pindex;
@@ -161,11 +161,11 @@
       var s = this.getDump();
 
       var ch =
-        "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=";
+        'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=';
       var c1, c2, c3, e1, e2, e3, e4;
       var l = s.length;
       var i = 0;
-      var r = "";
+      var r = '';
 
       do {
         c1 = s.charCodeAt(i);
@@ -213,7 +213,7 @@
       write(
         this.buffer,
         this.idat_offs + this.idat_size - 8,
-        byte4((s2 << 16) | s1)
+        byte4((s2 << 16) | s1),
       );
 
       // compute crc32 of the PNG chunks
@@ -234,7 +234,7 @@
       crc32(this.buffer, this.iend_offs, this.iend_size);
 
       // convert PNG to string
-      return "\x89PNG\r\n\x1A\n" + this.buffer.join("");
+      return '\x89PNG\r\n\x1A\n' + this.buffer.join('');
     };
 
     this.fillRect = function (x, y, w, h, color) {
@@ -358,7 +358,7 @@
 
   function buildOpts(opts) {
     if (!opts.seed) {
-      throw new Error("No seed provided");
+      throw new Error('No seed provided');
     }
 
     seedrand(opts.seed);
@@ -371,7 +371,7 @@
         bgcolor: createColor(),
         spotcolor: createColor(),
       },
-      opts
+      opts,
     );
   }
 
@@ -382,7 +382,7 @@
         return cache;
       }
 
-      const opts = buildOpts({ seed: address.toLowerCase() });
+      const opts = buildOpts({seed: address.toLowerCase()});
 
       const imageData = createImageData(opts.size);
       const width = Math.sqrt(imageData.length);
@@ -404,7 +404,7 @@
             row * opts.scale,
             opts.scale,
             opts.scale,
-            pngColor
+            pngColor,
           );
         }
       }
@@ -412,13 +412,13 @@
       Blockies.cache[address] = ret;
       return ret;
     } catch (error) {
-      return "";
+      return '';
     }
   }
 
   exports.toDataUrl = toDataUrl;
 
-  Object.defineProperty(exports, "__esModule", { value: true });
+  Object.defineProperty(exports, '__esModule', {value: true});
 });
 
 /**

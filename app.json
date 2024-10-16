@@ -26,9 +26,6 @@
     "experiments": {
       "typedRoutes": true
     },
-    "plugins": [
-      "expo-localization",
-      "expo-font"
-    ]
+    "plugins": ["expo-localization", "expo-font"]
   }
 }

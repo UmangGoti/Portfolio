@@ -1,6 +1,6 @@
-import { useTheme } from "@react-navigation/native";
-import React, { useState } from "react";
-import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import {useTheme} from '@react-navigation/native';
+import React, {useState} from 'react';
+import {StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import Animated, {
   BounceIn,
   BounceInDown,
@@ -12,34 +12,34 @@ import Animated, {
   BounceOutLeft,
   BounceOutRight,
   BounceOutUp,
-} from "react-native-reanimated";
-import { SafeAreaView } from "react-native-safe-area-context";
-import { Spacing } from "../../components";
-import { normalize, sizes, typography } from "../../theme";
+} from 'react-native-reanimated';
+import {SafeAreaView} from 'react-native-safe-area-context';
+import {Spacing} from '../../components';
+import {normalize, sizes, typography} from '../../theme';
 
 const data = [
   {
-    title: "Bounce(In/Out)Left",
+    title: 'Bounce(In/Out)Left',
     typeEntry: () => new BounceInLeft(),
     typeExit: () => new BounceOutLeft(),
   },
   {
-    title: "Bounce(In/Out)Right",
+    title: 'Bounce(In/Out)Right',
     typeEntry: () => new BounceInRight(),
     typeExit: () => new BounceOutRight(),
   },
   {
-    title: "Bounce(In/Out)Up",
+    title: 'Bounce(In/Out)Up',
     typeEntry: () => new BounceInUp(),
     typeExit: () => new BounceOutUp(),
   },
   {
-    title: "Bounce(In/Out)Down",
+    title: 'Bounce(In/Out)Down',
     typeEntry: () => new BounceInDown(),
     typeExit: () => new BounceOutDown(),
   },
   {
-    title: "Bounce(In/Out)",
+    title: 'Bounce(In/Out)',
     typeEntry: () => new BounceIn(),
     typeExit: () => new BounceOut(),
   },
@@ -49,10 +49,10 @@ const BounceAnimationScreen = () => {
   const [animationTypeEntry, setAnimationTypeEntry] = useState(null);
   const [animationTypeExit, setAnimationTypeExit] = useState(null);
   const [visible, setVisible] = useState(true);
-  const { colors } = useTheme();
+  const {colors} = useTheme();
   const styles = createStyle(colors);
 
-  const handleAnimation = (param) => {
+  const handleAnimation = param => {
     setVisible(false);
     setTimeout(() => {
       setAnimationTypeEntry(param?.typeEntry());
@@ -64,14 +64,13 @@ const BounceAnimationScreen = () => {
   };
 
   return (
-    <SafeAreaView style={styles.container} edges={["top", "bottom"]}>
+    <SafeAreaView style={styles.container} edges={['top', 'bottom']}>
       <View style={styles.animationContainer}>
         {visible && (
           <Animated.View
             style={styles.animatedContainer}
             entering={animationTypeEntry}
-            exiting={animationTypeExit}
-          >
+            exiting={animationTypeExit}>
             <Text style={styles.animationTitle}>Animation Box</Text>
           </Animated.View>
         )}
@@ -83,8 +82,7 @@ const BounceAnimationScreen = () => {
             key={index}
             activeOpacity={0.9}
             style={styles.button}
-            onPress={() => handleAnimation(item)}
-          >
+            onPress={() => handleAnimation(item)}>
             <Text style={styles.title}>{item.title}</Text>
           </TouchableOpacity>
         ))}
@@ -95,27 +93,27 @@ const BounceAnimationScreen = () => {
 
 export default BounceAnimationScreen;
 
-const createStyle = (colors) =>
+const createStyle = colors =>
   StyleSheet.create({
     container: {
       flex: 1,
       backgroundColor: colors.backgroundColor,
       paddingHorizontal: sizes.paddingHorizontal,
-      justifyContent: "center",
-      alignItems: "center",
+      justifyContent: 'center',
+      alignItems: 'center',
     },
     animationContainer: {
       height: normalize(60),
-      width: "100%",
-      justifyContent: "center",
+      width: '100%',
+      justifyContent: 'center',
     },
     animatedContainer: {
-      width: "100%",
+      width: '100%',
       height: normalize(50),
       backgroundColor: colors.backgroundColor,
       borderRadius: 12,
-      justifyContent: "center",
-      alignItems: "center",
+      justifyContent: 'center',
+      alignItems: 'center',
       borderWidth: 2,
       borderColor: colors.borderColor,
     },
@@ -124,18 +122,18 @@ const createStyle = (colors) =>
       color: colors.text,
     },
     buttonContainer: {
-      flexWrap: "wrap",
-      flexDirection: "row",
-      justifyContent: "space-around",
+      flexWrap: 'wrap',
+      flexDirection: 'row',
+      justifyContent: 'space-around',
       gap: 20,
     },
     button: {
       height: normalize(45),
       backgroundColor: colors.backgroundColor,
-      minWidth: "42%",
+      minWidth: '42%',
       borderRadius: 6,
-      justifyContent: "center",
-      alignItems: "center",
+      justifyContent: 'center',
+      alignItems: 'center',
       borderWidth: 1,
       borderColor: colors.borderColor,
     },

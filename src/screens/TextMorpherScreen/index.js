@@ -1,7 +1,7 @@
-import { useTheme } from "@react-navigation/native";
-import React, { useEffect, useState } from "react";
-import { StyleSheet, Text, View } from "react-native";
-import { fontPixel, typography } from "../../theme";
+import {useTheme} from '@react-navigation/native';
+import React, {useEffect, useState} from 'react';
+import {StyleSheet, Text, View} from 'react-native';
+import {fontPixel, typography} from '../../theme';
 
 // Function to generate a random character from a defined set
 const getRandomChar = () => {
@@ -11,17 +11,17 @@ const getRandomChar = () => {
 };
 
 // TextMorpher component to gradually morph a string from random characters into the target string
-const TextMorpher = ({ targetString }) => {
+const TextMorpher = ({targetString}) => {
   // useState hook to manage the displayed text, initially set to underscores of target string's length
   const [displayedText, setDisplayedText] = useState(
-    "_".repeat(targetString.length)
+    '_'.repeat(targetString.length),
   );
 
-  const { colors } = useTheme();
+  const {colors} = useTheme();
   const styles = createStyle(colors);
 
   useEffect(() => {
-    let currentText = displayedText.split(""); // Convert the displayed text to an array of characters
+    let currentText = displayedText.split(''); // Convert the displayed text to an array of characters
 
     let intervalId = setInterval(() => {
       let allMatched = true; // Flag to check if all characters have morphed into the target string
@@ -34,7 +34,7 @@ const TextMorpher = ({ targetString }) => {
         }
       }
 
-      setDisplayedText(currentText.join("")); // Update the displayed text with the new character array
+      setDisplayedText(currentText.join('')); // Update the displayed text with the new character array
 
       // Stop the interval if all characters have matched the target string
       if (allMatched) {
@@ -50,22 +50,22 @@ const TextMorpher = ({ targetString }) => {
 
 // Main screen component that utilizes the TextMorpher component
 const TextMorpherScreen = () => {
-  const { colors } = useTheme();
+  const {colors} = useTheme();
   const styles = createStyle(colors);
   return (
     <View style={styles.container}>
-      <TextMorpher targetString={"Umang M. Goti"} />
+      <TextMorpher targetString={'Umang M. Goti'} />
       <TextMorpher targetString={`I'm Mobile app developer.`} />
     </View>
   );
 };
 
-const createStyle = (colors) => {
+const createStyle = colors => {
   return StyleSheet.create({
     container: {
       flex: 1,
-      justifyContent: "center",
-      alignItems: "center",
+      justifyContent: 'center',
+      alignItems: 'center',
       backgroundColor: colors.backgroundColor,
     },
     morpherText: {
