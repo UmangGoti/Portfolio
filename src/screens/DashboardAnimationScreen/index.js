@@ -1,13 +1,13 @@
-import { useTheme } from "@react-navigation/native";
-import { Image } from "expo-image";
-import React, { useEffect, useState } from "react";
+import {useTheme} from '@react-navigation/native';
+import {Image} from 'expo-image';
+import React, {useEffect, useState} from 'react';
 import {
   Dimensions,
   StyleSheet,
   Text,
   TouchableOpacity,
   View,
-} from "react-native";
+} from 'react-native';
 import Animated, {
   Easing,
   interpolate,
@@ -16,12 +16,12 @@ import Animated, {
   useAnimatedStyle,
   useSharedValue,
   withTiming,
-} from "react-native-reanimated";
-import { useSafeAreaInsets } from "react-native-safe-area-context";
-import { ic_arrow_left, ic_arrow_right } from "../../assets/images";
-import { normalize } from "../../theme/index";
+} from 'react-native-reanimated';
+import {useSafeAreaInsets} from 'react-native-safe-area-context';
+import {ic_arrow_left, ic_arrow_right} from '../../assets/images';
+import {normalize} from '../../theme/index';
 
-const { width, height } = Dimensions.get("screen");
+const {width, height} = Dimensions.get('screen');
 
 const widthWithMargin = width;
 const widthArray = [1, 2, 3, 4, 5].map((item, index) => {
@@ -29,7 +29,7 @@ const widthArray = [1, 2, 3, 4, 5].map((item, index) => {
 });
 const agentNameTextHeight = 40;
 var requestOptions = {
-  method: "GET",
+  method: 'GET',
 };
 
 const DashboardAnimationScreen = () => {
@@ -39,7 +39,7 @@ const DashboardAnimationScreen = () => {
 
   const insets = useSafeAreaInsets();
 
-  const { colors } = useTheme();
+  const {colors} = useTheme();
 
   const styles = createStyle(colors);
 
@@ -57,20 +57,20 @@ const DashboardAnimationScreen = () => {
   }, []);
 
   useEffect(() => {
-    scrollViewRef.current.scrollTo({ x: width * x.value, y: 0 });
+    scrollViewRef.current.scrollTo({x: width * x.value, y: 0});
   }, [count]);
 
   //--Api Call
   const _callApi = () => {
-    fetch("https://valorant-api.com/v1/agents", requestOptions)
-      .then((response) => response.json())
-      .then((result) => {
+    fetch('https://valorant-api.com/v1/agents', requestOptions)
+      .then(response => response.json())
+      .then(result => {
         if (result.data) {
           let array = result.data.slice(0, 5);
           setData(array);
         }
       })
-      .catch((error) => console.error("error", error));
+      .catch(error => console.error('error', error));
   };
   //--End
 
@@ -82,7 +82,7 @@ const DashboardAnimationScreen = () => {
         widthX.value - width,
         {},
         () => {},
-        runOnJS(setCount)(count - 1)
+        runOnJS(setCount)(count - 1),
       );
     }
   };
@@ -95,7 +95,7 @@ const DashboardAnimationScreen = () => {
         widthX.value + width,
         {},
         () => {},
-        runOnJS(setCount)(count + 1)
+        runOnJS(setCount)(count + 1),
       );
     }
   };
@@ -108,7 +108,7 @@ const DashboardAnimationScreen = () => {
           translateY: interpolate(
             widthX.value,
             [-width, 0, width],
-            [agentNameTextHeight, 0, -agentNameTextHeight]
+            [agentNameTextHeight, 0, -agentNameTextHeight],
           ),
         },
       ],
@@ -117,12 +117,12 @@ const DashboardAnimationScreen = () => {
 
   return (
     <View style={styles.container}>
-      <View style={[styles.nameContainer, { marginTop: insets.top }]}>
+      <View style={[styles.nameContainer, {marginTop: insets.top}]}>
         <Animated.View style={textAnimatedStyle}>
           {data.map((item, index) => {
             return (
               <Text key={`Name - ${index}`} style={styles.agentNameText}>
-                {item.displayName ? item.displayName.toUpperCase() : ""}
+                {item.displayName ? item.displayName.toUpperCase() : ''}
               </Text>
             );
           })}
@@ -136,24 +136,22 @@ const DashboardAnimationScreen = () => {
         horizontal
         scrollEnabled={false}
         bounces={false}
-        showsHorizontalScrollIndicator={false}
-      >
+        showsHorizontalScrollIndicator={false}>
         {data.map((item, index) => {
           return (
             <View
               key={index}
               style={[
                 styles.scrollContainer,
-                { backgroundColor: `#${item.backgroundGradientColors[0]}` },
-              ]}
-            >
+                {backgroundColor: `#${item.backgroundGradientColors[0]}`},
+              ]}>
               <Image
-                source={{ uri: item.background }}
+                source={{uri: item.background}}
                 style={styles.backgroundImage}
                 contentFit="contain"
               />
               <Image
-                source={{ uri: item.fullPortrait }}
+                source={{uri: item.fullPortrait}}
                 style={styles.agentImage}
                 contentFit="contain"
               />
@@ -164,9 +162,8 @@ const DashboardAnimationScreen = () => {
       <View
         style={[
           styles.bottomButtonContainer,
-          { marginBottom: insets.bottom + normalize(15) },
-        ]}
-      >
+          {marginBottom: insets.bottom + normalize(15)},
+        ]}>
         {widthArray.map((item, index) => {
           const animatedStyle = useAnimatedStyle(() => {
             return {
@@ -185,8 +182,7 @@ const DashboardAnimationScreen = () => {
           return (
             <Animated.View
               style={[animatedStyle, styles.buttonContainer]}
-              key={`AnimatedView - ${index}`}
-            >
+              key={`AnimatedView - ${index}`}>
               {index === count ? (
                 <View style={styles.arrowContainer}>
                   {index != 0 ? (
@@ -223,7 +219,7 @@ const DashboardAnimationScreen = () => {
   );
 };
 
-const createStyle = (colors) => {
+const createStyle = colors => {
   return StyleSheet.create({
     container: {
       flex: 1,
@@ -232,56 +228,56 @@ const createStyle = (colors) => {
     scrollContainer: {
       flex: 1,
       width: width,
-      height: "100%",
+      height: '100%',
     },
-    backgroundImage: { width: "100%", height: "100%" },
+    backgroundImage: {width: '100%', height: '100%'},
     agentImage: {
-      width: "100%",
-      height: "100%",
+      width: '100%',
+      height: '100%',
       zIndex: 2,
-      position: "absolute",
+      position: 'absolute',
     },
     nameContainer: {
       height: agentNameTextHeight,
       zIndex: 2,
-      position: "absolute",
-      overflow: "hidden",
+      position: 'absolute',
+      overflow: 'hidden',
       marginLeft: width * 0.05,
     },
     agentNameText: {
       zIndex: 5,
-      color: "white",
+      color: 'white',
       fontSize: 40,
       lineHeight: 0,
       height: agentNameTextHeight,
-      fontWeight: "bold",
+      fontWeight: 'bold',
     },
     bottomButtonContainer: {
-      height: "6%",
-      flexDirection: "row",
-      justifyContent: "center",
-      position: "absolute",
+      height: '6%',
+      flexDirection: 'row',
+      justifyContent: 'center',
+      position: 'absolute',
       bottom: 0,
       right: 0,
       left: 0,
     },
     buttonContainer: {
       height: 50,
-      borderColor: "white",
+      borderColor: 'white',
       borderWidth: 2,
       borderRadius: 8,
       marginLeft: 2,
       marginRight: 2,
-      justifyContent: "center",
+      justifyContent: 'center',
       paddingLeft: 10,
       paddingRight: 10,
     },
     arrowContainer: {
-      flexDirection: "row",
-      justifyContent: "space-between",
+      flexDirection: 'row',
+      justifyContent: 'space-between',
     },
     arrow: {
-      tintColor: "white",
+      tintColor: 'white',
       width: 25,
       height: 25,
     },

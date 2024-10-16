@@ -1,5 +1,5 @@
-import { useTheme } from "@react-navigation/native";
-import React, { useCallback, useRef, useState } from "react";
+import {useTheme} from '@react-navigation/native';
+import React, {useCallback, useRef, useState} from 'react';
 import {
   Animated,
   LayoutAnimation,
@@ -7,12 +7,11 @@ import {
   Text,
   TouchableOpacity,
   View,
-} from "react-native";
-import { Spacing } from "../../components";
-import { colors, normalize, sizes, typography } from "../../theme";
+} from 'react-native';
+import {Spacing} from '../../components';
+import {colors, normalize, sizes, typography} from '../../theme';
 
-const delay = (time = 500) =>
-  new Promise((resolve) => setTimeout(resolve, time));
+const delay = (time = 500) => new Promise(resolve => setTimeout(resolve, time));
 
 const generateRandomArray = () => {
   return [...Array(10)].map(() => (Math.random() * 100).toFixed(0));
@@ -24,7 +23,7 @@ const BubbleSortScreen = () => {
   const [currentJ, setCurrentJ] = useState(0);
   const [currentJPrime, setCurrentJPrime] = useState(0);
   const [array, setArray] = useState(generateRandomArray);
-  const { colors: _colors } = useTheme();
+  const {colors: _colors} = useTheme();
   const styles = createStyle(_colors);
 
   const animatedValues = useRef(array.map(() => new Animated.Value(1))).current; // Scale animation
@@ -106,7 +105,7 @@ const BubbleSortScreen = () => {
     setSorting(false);
   }, [array, animatedValues, colorValues]);
 
-  const animatedBackgroundColor = (index) => {
+  const animatedBackgroundColor = index => {
     return colorValues[index].interpolate({
       inputRange: [0, 1],
       outputRange: [colors.dark.colors.blue, colors.dark.colors.purple],
@@ -139,17 +138,16 @@ const BubbleSortScreen = () => {
             key={index}
             style={{
               marginHorizontal: normalize(2),
-              alignItems: "center",
-              justifyContent: "center",
+              alignItems: 'center',
+              justifyContent: 'center',
               padding: 8,
               backgroundColor: animatedBackgroundColor(index),
               borderRadius: 8,
-              transform: [{ scale: animatedValues[index] }],
+              transform: [{scale: animatedValues[index]}],
               width: normalize(item) * 2,
               minWidth: 50,
               marginVertical: normalize(2.5),
-            }}
-          >
+            }}>
             <Text style={styles.arrayItem}>{item}</Text>
           </Animated.View>
         );
@@ -166,16 +164,14 @@ const BubbleSortScreen = () => {
       <TouchableOpacity
         style={styles.button}
         onPress={callBubbleSort}
-        disabled={sorting}
-      >
+        disabled={sorting}>
         <Text style={styles.title}>Sort Array</Text>
       </TouchableOpacity>
       <Spacing size={20} />
       <TouchableOpacity
         style={styles.button}
         onPress={regenerateArray}
-        disabled={sorting}
-      >
+        disabled={sorting}>
         <Text style={styles.title}>Regenerate Array</Text>
       </TouchableOpacity>
     </View>
@@ -184,31 +180,31 @@ const BubbleSortScreen = () => {
 
 export default BubbleSortScreen;
 
-const createStyle = (colors) =>
+const createStyle = colors =>
   StyleSheet.create({
     container: {
       flex: 1,
       backgroundColor: colors.backgroundColor,
       paddingHorizontal: sizes.paddingHorizontal,
-      justifyContent: "center",
-      alignItems: "center",
+      justifyContent: 'center',
+      alignItems: 'center',
     },
     arrayItem: {
       ...typography.fontStyles.nunitoBold,
-      color: "#fff",
+      color: '#fff',
     },
     indexValue: {
       ...typography.fontStyles.nunitoSemiBold,
       color: colors.text,
     },
-    indexContainer: { flexDirection: "row" },
+    indexContainer: {flexDirection: 'row'},
     button: {
       height: normalize(45),
       backgroundColor: colors.backgroundColor,
-      minWidth: "55%",
+      minWidth: '55%',
       borderRadius: 6,
-      justifyContent: "center",
-      alignItems: "center",
+      justifyContent: 'center',
+      alignItems: 'center',
       borderWidth: 1,
       borderColor: colors.borderColor,
     },

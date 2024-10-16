@@ -1,6 +1,6 @@
 import React from 'react';
-import { View, ViewStyle } from 'react-native';
-import { heightPixel, widthPixel } from '../theme';
+import {View, ViewStyle} from 'react-native';
+import {heightPixel, widthPixel} from '../theme';
 
 type SpacingProps = {
   size: number | string;
@@ -8,7 +8,7 @@ type SpacingProps = {
   style?: ViewStyle | ViewStyle[];
 };
 
-const Spacing: React.FC<SpacingProps> = ({ size = 0, direction, style }) => {
+const Spacing: React.FC<SpacingProps> = ({size = 0, direction, style}) => {
   const defaultStyle: ViewStyle = {};
 
   if (direction === 'x' || direction === 'X' || direction === 'row') {

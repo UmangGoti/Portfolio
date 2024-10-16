@@ -1,26 +1,24 @@
-"use strict";
+'use strict';
 
-import { Dimensions, Platform } from "react-native";
-import DeviceInfo, {
-  platformApiLevel,
-} from "expo-device";
-import AppInfo from 'expo-application'
+import {Dimensions, Platform} from 'react-native';
+import DeviceInfo, {platformApiLevel} from 'expo-device';
+import AppInfo from 'expo-application';
 
 export default class Device {
   static getDeviceWidth() {
-    return Dimensions.get("window").width;
+    return Dimensions.get('window').width;
   }
 
   static getDeviceHeight() {
-    return Dimensions.get("window").height;
+    return Dimensions.get('window').height;
   }
 
   static isIos() {
-    return Platform.OS === "ios";
+    return Platform.OS === 'ios';
   }
 
   static isAndroid() {
-    return Platform.OS === "android";
+    return Platform.OS === 'android';
   }
 
   static isLandscape() {
@@ -49,6 +47,6 @@ export default class Device {
   }
 
   static getVersionWithBuildNumber() {
-    return Device.getAppVersion() + "." + Device.getBuildNumber();
+    return Device.getAppVersion() + '.' + Device.getBuildNumber();
   }
 }

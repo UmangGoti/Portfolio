@@ -1,56 +1,77 @@
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import { getLocales } from "expo-localization";
-import { I18n } from "i18n-js";
-import ReactNative from "react-native";
-import en from "./locales/en.json";
-import gu from "./locales/gu.json";
-import hi from "./locales/hi.json";
-import { STORAGE } from "./src/constants/storage";
+// src/i18n.js
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import i18n from 'i18next';
+import {initReactI18next, useTranslation} from 'react-i18next';
+import {I18nManager} from 'react-native';
+import en from './locales/en.json';
+import gu from './locales/gu.json';
+import hi from './locales/hi.json';
+import {STORAGE} from './src/constants/storage';
 
-const i18n = new I18n({
-  en,
-  hi,
-  gu,
-});
-
-// Set the locale once at the beginning of your app.
-i18n.locale = getLocales()[0].languageCode ?? "en";
-
-// Should the app fallback to English if user locale doesn't exists.
-i18n.enableFallback = true;
-
-// Default Languages for support.
-export const getLanguages = () => {
-  return {
-    en: "English",
-    hi: "Hindi",
-    gu: "Gujarati",
-  };
+export const LANGUAGES = {
+  en: 'English',
+  hi: 'Hindi',
+  gu: 'Gujarati',
 };
 
-// Set local.
-export const setLocale = async (locale) => {
-  i18n.locale = locale;
-  await AsyncStorage.setItem(STORAGE.LANGUAGE, locale);
-};
-
-export const isRTL = false;
-
-ReactNative.I18nManager.allowRTL(isRTL);
-
-// The method we'll use instead of a regular string.
-// Ex. strings('Profile.name')
-export const strings = (name, params = {}) => {
-  return i18n.t(name, params);
-};
-
-// Allow persist locale after app closed.
-export const getUserPreferableLocale = async () => {
-  const locale = await AsyncStorage.getItem(STORAGE.LANGUAGE);
-  if (locale) {
-    i18n.locale = locale;
+const getUserLanguage = async () => {
+  try {
+    const language = await AsyncStorage.getItem(STORAGE.LANGUAGE);
+    if (language) {
+      return language;
+    }
+    const locale = I18nManager.localeIdentifier.split('_')[0];
+    return LANGUAGES[locale] ? locale : 'en';
+  } catch (error) {
+    console.error('Failed to fetch the user language from storage', error);
+    return 'en';
   }
 };
 
-// If language selected, get locale.
-getUserPreferableLocale();
+const initI18n = async () => {
+  const language = await getUserLanguage();
+
+  await i18n.use(initReactI18next).init({
+    resources: {
+      en: {translation: en},
+      hi: {translation: hi},
+      gu: {translation: gu},
+    },
+    lng: language,
+    fallbackLng: 'en',
+    compatibilityJSON: 'v3',
+    interpolation: {
+      escapeValue: false,
+    },
+    react: {
+      useSuspense: false,
+    },
+  });
+
+  const isRTL = ['ar', 'he', 'fa', 'ur'].includes(language);
+  I18nManager.allowRTL(isRTL);
+  I18nManager.forceRTL(isRTL);
+};
+
+initI18n();
+
+export const strings = value => {
+  const {t} = useTranslation();
+
+  return t(value);
+};
+
+export const changeLanguage = async language => {
+  try {
+    await i18n.changeLanguage(language);
+    await AsyncStorage.setItem(STORAGE.LANGUAGE, language);
+    const isRTL = ['ar', 'he', 'fa', 'ur'].includes(language);
+    I18nManager.allowRTL(isRTL);
+    I18nManager.forceRTL(isRTL);
+    // Optionally, reload the app if RTL changes
+  } catch (error) {
+    console.error('Failed to change language', error);
+  }
+};
+
+export default i18n;

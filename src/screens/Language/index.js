@@ -1,28 +1,22 @@
-import Fontisto from "@expo/vector-icons/Fontisto";
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import { useTheme } from "@react-navigation/native";
-import React, { useCallback, useEffect, useMemo, useState } from "react";
-import {
-  FlatList,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View,
-} from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
-import { setLocale } from "../../../i18";
-import { Spacing } from "../../components";
-import { STORAGE } from "../../constants/storage";
+import Fontisto from '@expo/vector-icons/Fontisto';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import {useTheme} from '@react-navigation/native';
+import React, {useCallback, useEffect, useMemo, useState} from 'react';
+import {FlatList, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
+import {SafeAreaView} from 'react-native-safe-area-context';
+import {changeLanguage} from '../../../i18';
+import {Spacing} from '../../components';
+import {STORAGE} from '../../constants/storage';
 import {
   fontPixel,
   normalize,
   pixelSizeHorizontal,
   sizes,
   typography,
-} from "../../theme";
+} from '../../theme';
 
 const Language = () => {
-  const { colors } = useTheme();
+  const {colors} = useTheme();
   const styles = createStyle(colors);
   const [local, setLocal] = useState(null);
 
@@ -35,32 +29,31 @@ const Language = () => {
     fetchLanguage();
   }, []);
 
-  const handleLanguageSelection = async (type) => {
+  const handleLanguageSelection = async type => {
     setLocal(type); // Update the state to reflect the selected language
-    await setLocale(type); // Set the locale (assuming this changes the app language)
+    await changeLanguage(type); // Set the locale (assuming this changes the app language)
   };
 
   const languageOptions = useMemo(
     () => [
-      { title: "English", type: "en" },
-      { title: "Hindi", type: "hi" },
-      { title: "Gujarati", type: "gu" },
+      {title: 'English', type: 'en'},
+      {title: 'Hindi', type: 'hi'},
+      {title: 'Gujarati', type: 'gu'},
     ],
-    []
+    [],
   );
 
   const renderItem = useCallback(
-    ({ item }) => {
+    ({item}) => {
       return (
         <TouchableOpacity
           activeOpacity={0.6}
           onPress={() => handleLanguageSelection(item.type)} // Manage click event here
-          style={styles.itemContainer}
-        >
+          style={styles.itemContainer}>
           <Text style={styles.itemTitle}>{item.title}</Text>
           <Fontisto
             name={
-              item.type === local ? "radio-btn-active" : "radio-btn-passive"
+              item.type === local ? 'radio-btn-active' : 'radio-btn-passive'
             }
             size={18}
             color={colors.radioButton.radioColor}
@@ -68,18 +61,18 @@ const Language = () => {
         </TouchableOpacity>
       );
     },
-    [local]
+    [local],
   );
 
   return (
-    <SafeAreaView style={{ flex: 1 }} edges={["top"]}>
+    <SafeAreaView style={{flex: 1}} edges={['top']}>
       <View style={styles.wrapper}>
         <Text style={styles.headerText}>Select Language</Text>
         <Spacing size={normalize(20)} />
         <FlatList
           data={languageOptions}
           contentContainerStyle={styles.contentContainerStyle}
-          keyExtractor={(item) => item.type}
+          keyExtractor={item => item.type}
           extraData={local}
           renderItem={renderItem}
         />
@@ -90,7 +83,7 @@ const Language = () => {
 
 export default Language;
 
-const createStyle = (colors) => {
+const createStyle = colors => {
   return StyleSheet.create({
     wrapper: {
       flex: 1,
@@ -106,11 +99,11 @@ const createStyle = (colors) => {
       gap: 15,
     },
     itemContainer: {
-      flexDirection: "row",
+      flexDirection: 'row',
       paddingHorizontal: pixelSizeHorizontal(20),
       height: normalize(60),
-      justifyContent: "space-between",
-      alignItems: "center",
+      justifyContent: 'space-between',
+      alignItems: 'center',
       borderRadius: normalize(12),
       borderWidth: 2,
       borderColor: colors.radioButton.borderColor,

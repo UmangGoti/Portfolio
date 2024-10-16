@@ -1,23 +1,23 @@
-import { useTheme } from "@react-navigation/native";
-import React, { useEffect } from "react";
-import { StyleSheet, View } from "react-native";
+import {useTheme} from '@react-navigation/native';
+import React, {useEffect} from 'react';
+import {StyleSheet, View} from 'react-native';
 import Animated, {
   Easing,
   useAnimatedStyle,
   useSharedValue,
   withRepeat,
   withTiming,
-} from "react-native-reanimated";
-import { normalize } from "../../theme";
+} from 'react-native-reanimated';
+import {normalize} from '../../theme';
 
 const RotatingScalingBoxScreen = () => {
   const rotation = useSharedValue(0); // Starts at 0 degrees
   const scale = useSharedValue(0.1); // Starts small
-  const { colors } = useTheme();
+  const {colors} = useTheme();
   const styles = createStyle(colors);
 
   const animatedStyles = useAnimatedStyle(() => ({
-    transform: [{ rotateZ: `${rotation.value}deg` }, { scale: scale.value }],
+    transform: [{rotateZ: `${rotation.value}deg`}, {scale: scale.value}],
   }));
 
   useEffect(() => {
@@ -28,7 +28,7 @@ const RotatingScalingBoxScreen = () => {
         easing: Easing.linear,
       }),
       -1, // Infinite repetition
-      false // No reversal, continuous forward rotation
+      false, // No reversal, continuous forward rotation
     );
 
     scale.value = withRepeat(
@@ -37,7 +37,7 @@ const RotatingScalingBoxScreen = () => {
         easing: Easing.inOut(Easing.linear),
       }),
       -1, // Infinite repetition
-      true // Reverse the scale animation on each iteration
+      true, // Reverse the scale animation on each iteration
     );
   }, []); // Empty dependency array to ensure it runs only on mount
 
@@ -50,12 +50,12 @@ const RotatingScalingBoxScreen = () => {
 
 export default RotatingScalingBoxScreen;
 
-const createStyle = (colors) => {
+const createStyle = colors => {
   return StyleSheet.create({
     container: {
       flex: 1,
-      justifyContent: "center",
-      alignItems: "center",
+      justifyContent: 'center',
+      alignItems: 'center',
       backgroundColor: colors.backgroundColor,
     },
     animatedBoxContainer: {
