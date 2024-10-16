@@ -1,3 +1,4 @@
+import {X_RAPIDAPI_HOST, X_RAPIDAPI_KEY} from '@env';
 import {AntDesign, Ionicons, MaterialIcons} from '@expo/vector-icons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {useIsFocused, useTheme} from '@react-navigation/native';
@@ -19,7 +20,7 @@ import {SafeAreaView} from 'react-native-safe-area-context';
 import {useDispatch, useSelector} from 'react-redux';
 import {icon} from '../../assets/images';
 import {BottomSheet, Loader, QrCodeModal, Spacing} from '../../components';
-import {accountType, networkList, networks} from '../../constants';
+import {accountType, coins, networkList, networks} from '../../constants';
 import {STORAGE} from '../../constants/storage';
 import {
   addNewAccount,
@@ -30,6 +31,7 @@ import {
 } from '../../redux/slice/walletSlice';
 import {
   fontPixel,
+  hexToRGBA,
   normalize,
   sizes,
   colors as tColors,
@@ -80,6 +82,10 @@ const Wallet = () => {
       });
   }, [focused, wallet]);
 
+  useEffect(() => {
+    // getCoins()
+  }, []);
+
   const createWallets = async () => {
     if (focused) {
       setLoading(true);
@@ -127,6 +133,27 @@ const Wallet = () => {
         setLoading(false);
       }
     }
+  };
+
+  const getCoins = () => {
+    const headers = new Headers();
+    headers.append('x-rapidapi-host', X_RAPIDAPI_HOST);
+    headers.append('x-rapidapi-key', X_RAPIDAPI_KEY);
+
+    fetch(
+      'https://coinranking1.p.rapidapi.com/coins?referenceCurrencyUuid=yhjMzLPhuIDl&timePeriod=24h&orderBy=marketCap&orderDirection=desc&limit=56&offset=0',
+      {method: 'GET', headers, redirect: 'follow'},
+    )
+      .then(response => response?.text())
+      .then(data => {
+        const _data = JSON.parse(data);
+        console.log('====================================');
+        console.log(JSON.stringify(_data));
+        console.log('====================================');
+      })
+      .catch(error => {
+        console.error(error);
+      });
   };
 
   const createAccount = (wallet, accountName, accountType) => ({
@@ -228,6 +255,16 @@ const Wallet = () => {
     }
   };
 
+  const changeImageUrlExtension = (url, toExtension = '.png') => {
+    var index = url.lastIndexOf('.');
+    var extension = url.slice(index, url.length);
+    if (extension === '.svg') {
+      return url.slice(0, index) + `${toExtension}`;
+    }
+
+    return url;
+  };
+
   return (
     <GestureHandlerRootView>
       <SafeAreaView style={styles.container} edges={['top', 'bottom']}>
@@ -238,6 +275,7 @@ const Wallet = () => {
           />
           <ScrollView
             contentContainerStyle={{alignItems: 'flex-start'}}
+            showsVerticalScrollIndicator={false}
             style={{
               paddingHorizontal: sizes.paddingHorizontal,
               paddingVertical: sizes.paddingVertical,
@@ -257,7 +295,7 @@ const Wallet = () => {
               </Pressable>
               <Spacing direction="x" size={20} />
               <View style={{flex: 1}}>
-                <Text style={styles.accountName}>
+                <Text style={styles.accountName} onPress={onPressProfile}>
                   {wallet?.currentAccount?.accountName}
                 </Text>
                 <Text
@@ -326,6 +364,66 @@ const Wallet = () => {
                 />
               </ActionButton>
             </View>
+            <Spacing size={15} />
+            {coins?.map((item, index) => {
+              return (
+                <>
+                  <Pressable
+                    key={index}
+                    style={{
+                      flexDirection: 'row',
+                      paddingVertical: normalize(10),
+                      paddingHorizontal: 10,
+                      alignItems: 'center',
+                      backgroundColor: hexToRGBA(
+                        tColors.dark.colors.appIcon,
+                        0.3,
+                      ),
+                      width: '100%',
+                      borderRadius: 18,
+                    }}>
+                    <View
+                      style={{
+                        padding: 5,
+                        backgroundColor: hexToRGBA(item.color, 0.5),
+                        borderRadius: 18,
+                        overflow: 'hidden',
+                      }}>
+                      <Image
+                        source={{uri: changeImageUrlExtension(item?.iconUrl)}}
+                        style={{
+                          width: normalize(38),
+                          height: normalize(38),
+                        }}
+                        resizeMode="contain"
+                      />
+                    </View>
+                    <Spacing direction="x" size={12} />
+                    <View>
+                      <Text
+                        style={{
+                          ...typography.fontStyles.nunitoBold,
+                          fontSize: fontPixel(16),
+                          color: colors.text,
+                        }}>
+                        {item.name}
+                      </Text>
+                      <Spacing size={3} />
+                      <Text
+                        style={{
+                          ...typography.fontStyles.nunitoRegular,
+                          fontSize: fontPixel(14),
+                          color: tColors.dark.colors.gray,
+                        }}>
+                        {item.price} {item.symbol}
+                      </Text>
+                    </View>
+                  </Pressable>
+                  <Spacing size={10} />
+                </>
+              );
+            })}
+            <Spacing size={100} />
           </ScrollView>
         </View>
       </SafeAreaView>
