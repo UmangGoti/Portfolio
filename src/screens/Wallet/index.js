@@ -367,7 +367,7 @@ const Wallet = () => {
             <Spacing size={15} />
             {coins?.map((item, index) => {
               return (
-                <>
+                <View key={index} style={{width: '100%'}}>
                   <Pressable
                     key={index}
                     style={{
@@ -420,7 +420,7 @@ const Wallet = () => {
                     </View>
                   </Pressable>
                   <Spacing size={10} />
-                </>
+                </View>
               );
             })}
             <Spacing size={100} />

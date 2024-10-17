@@ -1,3 +1,4 @@
+export {default as AnimatedNumberTransitionScreen} from './AnimatedNumberTransitionScreen';
 export {default as BounceAnimationScreen} from './BounceAnimationScreen';
 export {default as ColorChangingBoxAnimationScreen} from './ColorChangingBoxAnimationScreen';
 export {default as DashboardAnimationScreen} from './DashboardAnimationScreen';

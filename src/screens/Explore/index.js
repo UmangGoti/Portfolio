@@ -1,14 +1,7 @@
 import {Ionicons} from '@expo/vector-icons';
 import {useTheme} from '@react-navigation/native';
-import React, {useCallback, useRef} from 'react';
-import {
-  Animated,
-  Image,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View,
-} from 'react-native';
+import React, {useCallback} from 'react';
+import {Image, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import {useSelector} from 'react-redux';
 import {ic_chevron_right} from '../../assets/images';
 import {ParallaxScrollView, Spacing} from '../../components';
@@ -25,10 +18,9 @@ import {
 const Explore = () => {
   const {colors} = useTheme();
   const styles = createStyle(colors);
-  const scrollY = useRef(new Animated.Value(0)).current;
   const global = useSelector(state => state?.global);
 
-  const onPress = (item, index) => {
+  const onPress = item => {
     navigate(item?.route);
   };
 
@@ -50,9 +42,6 @@ const Explore = () => {
       </TouchableOpacity>
     );
   }, []);
-
-  const ItemSeparatorComponent = () =>
-    useCallback(() => <Spacing size={10} />, []);
 
   return (
     <ParallaxScrollView
@@ -104,7 +93,6 @@ const createStyle = colors => {
     },
     headerText: {
       fontSize: fontPixel(35),
-      color: 'black',
       ...typography.fontStyles.nunitoBold,
       color: colors?.header?.color,
     },
@@ -182,5 +170,10 @@ const data = [
     title: 'Passcode UI',
     discretion: '',
     route: ROUTES.SCREENS.PASSCODE_SCREEN,
+  },
+  {
+    title: 'Animated Number Transition',
+    discretion: '',
+    route: ROUTES.SCREENS.ANIMATED_NUMBER_TRANSITION_SCREEN,
   },
 ];

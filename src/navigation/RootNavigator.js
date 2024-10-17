@@ -14,6 +14,7 @@ import {ROUTES} from '../constants';
 import {STORAGE} from '../constants/storage';
 import {setMode} from '../redux/slice/globalSlice';
 import {
+  AnimatedNumberTransitionScreen,
   BounceAnimationScreen,
   BubbleSortScreen,
   ColorChangingBoxAnimationScreen,
@@ -168,6 +169,12 @@ const RootNavigator = ({local}) => {
               key={ROUTES.SCREENS.PASSCODE_SCREEN}
               name={ROUTES.SCREENS.PASSCODE_SCREEN}
               component={PasscodeScreen}
+              options={{headerShown: false}}
+            />
+            <Stack.Screen
+              key={ROUTES.SCREENS.ANIMATED_NUMBER_TRANSITION_SCREEN}
+              name={ROUTES.SCREENS.ANIMATED_NUMBER_TRANSITION_SCREEN}
+              component={AnimatedNumberTransitionScreen}
               options={{headerShown: false}}
             />
           </Stack.Navigator>

@@ -40,6 +40,7 @@ export const ROUTES = {
     FLIP_ANIMATION_SCREEN: 'FlipAnimationScreen',
     BUBBLE_SORT_SCREEN: 'BubbleSortScreen',
     PASSCODE_SCREEN: 'PasscodeScreen',
+    ANIMATED_NUMBER_TRANSITION_SCREEN: 'AnimatedNumberTransitionScreen',
   },
 };
 
