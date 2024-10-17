@@ -1,8 +1,15 @@
 import {useTheme} from '@react-navigation/native';
 import React, {useEffect, useState} from 'react';
-import {Animated, Easing, StyleSheet, Text, View} from 'react-native';
+import {
+  Animated,
+  Easing,
+  LayoutAnimation,
+  StyleSheet,
+  Text,
+  View,
+} from 'react-native';
 import {SafeAreaView} from 'react-native-safe-area-context';
-import {fontPixel, normalize, typography} from '../../theme';
+import {normalize, typography} from '../../theme';
 import Device from '../../utils/device';
 
 const AnimatedNumberTransitionScreen = () => {
@@ -10,7 +17,7 @@ const AnimatedNumberTransitionScreen = () => {
   const styles = createStyle(colors);
   return (
     <SafeAreaView style={styles.container} edges={['top', 'bottom']}>
-      <AnimatedNumber number={'$464465421546.5465'} />
+      <AnimatedNumber number={'$121045465.48812'} />
     </SafeAreaView>
   );
 };
@@ -37,14 +44,28 @@ const AnimatedNumber = ({number, digitHeight = 20}) => {
   // Function to preprocess the number and extract digits
   const [digits, setDigits] = useState([]);
   const [translateYValues, setTranslateYValues] = useState([]);
-  const [layoutHeight, setLayoutHeight] = useState(fontPixel(digitHeight));
+  const [layoutHeight, setLayoutHeight] = useState(digitHeight);
+  const [prevDigits, setPrevDigits] = useState([]);
+  const [isFirstRender, setIsFirstRender] = useState(true);
 
   useEffect(() => {
     const newDigits = extractDigits(number);
     setDigits(newDigits);
 
-    const newTranslateYValues = newDigits.map(() => new Animated.Value(0));
+    const newTranslateYValues = newDigits.map((digit, i) =>
+      isFirstRender
+        ? new Animated.Value(-layoutHeight * 10)
+        : translateYValues[i] || new Animated.Value(0),
+    );
+
+    // Handle removal of excess translateYValues if number shrinks
+    if (newTranslateYValues.length > newDigits.length) {
+      newTranslateYValues.length = newDigits.length;
+    }
+
+    LayoutAnimation.easeInEaseOut();
     setTranslateYValues(newTranslateYValues);
+    setPrevDigits(digits);
   }, [number]);
 
   useEffect(() => {
@@ -53,9 +74,16 @@ const AnimatedNumber = ({number, digitHeight = 20}) => {
         return;
       }
 
+      const prevDigit = prevDigits[index] ?? digit;
+      const startValue = isFirstRender
+        ? -10 * layoutHeight
+        : -prevDigit * layoutHeight;
+      const endValue = -digit * layoutHeight;
+      translateYValues[index].setValue(startValue || 0);
+
       Animated.timing(translateYValues[index], {
-        toValue: -digit * layoutHeight,
-        duration: 500,
+        toValue: endValue,
+        duration: 200,
         easing: Easing.out(Easing.quad),
         delay: index * 100,
         useNativeDriver: true,
@@ -76,7 +104,7 @@ const AnimatedNumber = ({number, digitHeight = 20}) => {
         style={[
           styles.number,
           {
-            fontSize: digitHeight ? fontPixel(digitHeight) : fontPixel(30),
+            fontSize: digitHeight ? digitHeight : 30,
             position: 'absolute',
             transform: [
               {translateX: Device.getDeviceWidth() * 1000},
@@ -98,9 +126,7 @@ const AnimatedNumber = ({number, digitHeight = 20}) => {
               style={[
                 styles.number,
                 {
-                  fontSize: digitHeight
-                    ? fontPixel(digitHeight)
-                    : fontPixel(30),
+                  fontSize: digitHeight ? digitHeight : 30,
                 },
               ]}>
               {digit}
@@ -116,9 +142,7 @@ const AnimatedNumber = ({number, digitHeight = 20}) => {
                   style={[
                     styles.number,
                     {
-                      fontSize: digitHeight
-                        ? fontPixel(digitHeight)
-                        : fontPixel(30),
+                      fontSize: digitHeight ? digitHeight : 30,
                     },
                   ]}>
                   {i}
