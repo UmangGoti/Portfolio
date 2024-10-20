@@ -40,7 +40,7 @@ const TextMorpher = ({targetString}) => {
       if (allMatched) {
         clearInterval(intervalId);
       }
-    }, 5); // Adjust interval timing to control the speed of morphing
+    }, 20); // Adjust interval timing to control the speed of morphing
 
     return () => clearInterval(intervalId); // Clean up the interval on component unmount
   }, []);

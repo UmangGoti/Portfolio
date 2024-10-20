@@ -40,7 +40,7 @@ import {navigationRef} from './NavigationUtils';
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
 
-const RootNavigator = ({local}) => {
+const RootNavigator = () => {
   const global = useSelector(state => state?.global);
   const dispatch = useDispatch();
   const routeNameRef = React.createRef();

@@ -1,5 +1,5 @@
 import {useTheme} from '@react-navigation/native';
-import React, {useEffect, useState} from 'react';
+import React, {useCallback, useEffect, useState} from 'react';
 import {
   Image,
   Platform,
@@ -29,6 +29,44 @@ const steps = {
   },
 };
 
+const DotIndicator = ({isFilled, animatedStyle}) => {
+  const {colors: _colors} = useTheme();
+  let styles = createStyle(_colors);
+  return (
+    <Animated.View
+      style={[
+        styles.dot,
+        animatedStyle,
+        isFilled && {backgroundColor: colors.dark.colors.blue},
+      ]}
+    />
+  );
+};
+
+const KeypadButton = ({digit, onPress}) => {
+  const {colors: _colors} = useTheme();
+  let styles = createStyle(_colors);
+  return (
+    <TouchableOpacity
+      activeOpacity={0.5}
+      style={[
+        styles.key,
+        {
+          backgroundColor:
+            digit === '' ? colors.primaryBg : 'rgba(28, 28, 30, 1)',
+        },
+      ]}
+      disabled={digit === ''}
+      onPress={onPress}>
+      {digit === 'erase' ? (
+        <Image source={ic_backspace} style={styles.key} resizeMode="contain" />
+      ) : (
+        <Text style={styles.digit}>{digit}</Text>
+      )}
+    </TouchableOpacity>
+  );
+};
+
 const PasscodeScreen = () => {
   const [newPasscode, setNewPasscode] = useState('');
   const [confirmPasscode, setConfirmPasscode] = useState('');
@@ -40,55 +78,63 @@ const PasscodeScreen = () => {
   let styles = createStyle(_colors);
 
   useEffect(() => {
-    if (newPasscode?.length === 6 && confirmPasscode?.length !== 6) {
+    let transitionTimer;
+
+    if (newPasscode.length === 6 && confirmPasscode.length < 6) {
       setWrongAttempt(false);
-      setStep(2);
-    } else if (newPasscode?.length === 6 && confirmPasscode?.length === 6) {
+      transitionTimer = setTimeout(() => setStep(2), 500);
+    } else if (newPasscode.length === 6 && confirmPasscode.length === 6) {
       if (newPasscode === confirmPasscode) {
         alert('New Passcode created.');
-        setStep(1);
-        setNewPasscode('');
-        setConfirmPasscode('');
-        setWrongAttempt(false);
+        transitionTimer = setTimeout(resetPasscode, 500);
       } else {
         setWrongAttempt(true);
-        shakeAnimation.value = withSequence(
-          withTiming(-10, {duration: 50}),
-          withTiming(10, {duration: 50}),
-          withTiming(-10, {duration: 50}),
-          withTiming(10, {duration: 50}),
-          withTiming(0, {duration: 50}),
-        );
-        setTimeout(() => {
+        triggerShakeAnimation();
+        transitionTimer = setTimeout(() => {
           setWrongAttempt(false);
           setConfirmPasscode('');
         }, 500);
       }
     }
-  }, [confirmPasscode, newPasscode, shakeAnimation]);
+
+    return () => clearTimeout(transitionTimer);
+  }, [newPasscode, confirmPasscode, resetPasscode]);
+
+  const resetPasscode = useCallback(() => {
+    setNewPasscode('');
+    setConfirmPasscode('');
+    setStep(1);
+    setWrongAttempt(false);
+  }, []);
+
+  const triggerShakeAnimation = () => {
+    shakeAnimation.value = withSequence(
+      withTiming(-10, {duration: 50}),
+      withTiming(10, {duration: 50}),
+      withTiming(-10, {duration: 50}),
+      withTiming(10, {duration: 50}),
+      withTiming(0, {duration: 50}),
+    );
+  };
 
   const handleKeyPress = digit => {
-    if (newPasscode.length < 6 && step === 1) {
+    if (step === 1 && newPasscode.length < 6) {
       setNewPasscode(prev => prev + digit);
-      inputDotScale.value = withTiming(
-        1.2,
-        {duration: 150, easing: Easing.inOut(Easing.ease)},
-        () => {
-          inputDotScale.value = withTiming(1, {duration: 150});
-        },
-      );
-    } else {
-      if (confirmPasscode?.length < 6 && step === 2) {
-        setConfirmPasscode(prev => prev + digit);
-        inputDotScale.value = withTiming(
-          1.2,
-          {duration: 150, easing: Easing.inOut(Easing.ease)},
-          () => {
-            inputDotScale.value = withTiming(1, {duration: 150});
-          },
-        );
-      }
+      scaleDot();
+    } else if (step === 2 && confirmPasscode.length < 6) {
+      setConfirmPasscode(prev => prev + digit);
+      scaleDot();
     }
+  };
+
+  const scaleDot = () => {
+    inputDotScale.value = withTiming(
+      1.2,
+      {duration: 150, easing: Easing.inOut(Easing.ease)},
+      () => {
+        inputDotScale.value = withTiming(1, {duration: 150});
+      },
+    );
   };
 
   const handleDelete = () => {
@@ -136,47 +182,26 @@ const PasscodeScreen = () => {
           <Text style={styles.title}>{steps[step]?.title}</Text>
           <View style={styles.passcodeContainer}>
             {[...Array(6)].map((_, index) => (
-              <Animated.View
+              <DotIndicator
                 key={index}
-                style={[styles.dot, animatedDotStyle(index)]}
+                isFilled={
+                  (step === 1 ? newPasscode : confirmPasscode).length > index
+                }
+                animatedStyle={animatedDotStyle(index)}
               />
             ))}
           </View>
           <View style={styles.keypad}>
             {[1, 2, 3, 4, 5, 6, 7, 8, 9, '', 0, 'erase'].map((digit, index) => (
-              <TouchableOpacity
+              <KeypadButton
                 key={index}
-                style={[
-                  styles.key,
-                  {
-                    backgroundColor:
-                      digit === '' ? colors.primaryBg : 'rgba(28, 28, 30, 1)',
-                  },
-                ]}
-                disabled={digit === ''}
-                onPress={() => {
-                  if (digit === 'Fingerprint') {
-                    console.log(digit);
-                  } else if (digit === 'erase') {
-                    handleDelete();
-                  } else {
-                    handleKeyPress(digit.toString());
-                  }
-                }}>
-                {digit === 'Fingerprint' ? (
-                  <></>
-                ) : digit === 'erase' ? (
-                  <Image
-                    source={ic_backspace}
-                    style={{
-                      width: normalize(75),
-                      height: normalize(75),
-                    }}
-                  />
-                ) : (
-                  <Text style={styles.digit}>{digit}</Text>
-                )}
-              </TouchableOpacity>
+                digit={digit}
+                onPress={() =>
+                  digit === 'erase'
+                    ? handleDelete()
+                    : handleKeyPress(digit.toString())
+                }
+              />
             ))}
           </View>
         </View>

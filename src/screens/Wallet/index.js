@@ -319,13 +319,13 @@ const Wallet = () => {
                 justifyContent: 'center',
                 gap: normalize(20),
               }}>
-              <ActionButton>
+              {/* <ActionButton>
                 <MaterialIcons
                   name="call-made"
                   size={24}
                   color={tColors.dark.colors.appIcon}
                 />
-              </ActionButton>
+              </ActionButton> */}
               <ActionButton
                 onPress={() => {
                   qrCodeModalRef?.current?.show(
