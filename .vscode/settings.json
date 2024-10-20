@@ -1,35 +1,38 @@
 {
-    "cSpell.words": [
-        "nunito",
-        "svgs"
-    ],
-    "files.autoSave": "off",
-    "eslint.alwaysShowStatus": true,
-    "eslint.validate": [
-        "javascript",
-        "javascriptreact",
-        "typescript",
-        "typescriptreact"
-    ],
+  "cSpell.words": [
+    "arbitrum",
+    "bitcoinjs",
+    "Blockies",
+    "ellipsize",
+    "hdkey",
+    "Ionicons",
+    "keypair",
+    "Morpher",
+    "nums",
+    "nunito",
+    "Passcode",
+    "Pressable",
+    "RAPIDAPI",
+    "sekah",
+    "solana",
+    "tronweb",
+    "wpkh"
+  ],
+  "files.autoSave": "off",
+  "eslint.validate": ["javascript", "javascriptreact"],
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "editor.formatOnSave": true,
+  "editor.formatOnPaste": false,
+  "javascript.validate.enable": false,
+  "[javascript]": {
     "editor.formatOnSave": true,
-    "editor.formatOnPaste": false,
-    "javascript.validate.enable": false,
-    "[javascript]": {
-        "editor.formatOnSave": true,
-        "editor.formatOnPaste": false
-    },
-    "[javascriptreact]": {
-        "editor.formatOnSave": true,
-        "editor.formatOnPaste": false
-    },
-    "[typescriptreact]": {
-        "editor.formatOnSave": true,
-        "editor.formatOnPaste": false
-    },
-    "editor.codeActionsOnSave": {
-        "source.fixAll.eslint": "explicit"
-    },
-    "[jsonc]": {
-        "editor.defaultFormatter": "vscode.json-language-features"
-    }
+    "editor.formatOnPaste": false
+  },
+  "[javascriptreact]": {
+    "editor.formatOnSave": true,
+    "editor.formatOnPaste": false
+  },
+  "editor.codeActionsOnSave": {
+    "source.fixAll.eslint": "explicit"
+  }
 }
