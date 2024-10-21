@@ -72,7 +72,7 @@ const Settings = () => {
             },
           },
           {
-            title: 'Language',
+            title: 'Select language',
             onPress: () => {
               navigate(ROUTES.SCREENS.LANGUAGE_SCREEN);
             },

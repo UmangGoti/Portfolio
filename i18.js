@@ -19,8 +19,14 @@ const getUserLanguage = async () => {
     const language = await AsyncStorage.getItem(STORAGE.LANGUAGE);
     if (language) {
       return language;
+    } else {
+      await AsyncStorage.setItem(STORAGE.LANGUAGE, 'en');
     }
-    const locale = I18nManager.localeIdentifier.split('_')[0];
+    // Ensure localeIdentifier is defined
+    const locale = I18nManager?.localeIdentifier
+      ? I18nManager.localeIdentifier.split('_')[0]
+      : undefined;
+
     return LANGUAGES[locale] ? locale : 'en';
   } catch (error) {
     console.error('Failed to fetch the user language from storage', error);
